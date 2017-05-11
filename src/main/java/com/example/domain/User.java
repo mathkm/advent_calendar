@@ -14,13 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-@ToString(exclude = "customers")
 public class User {
 	@Id
 	private String username;
 	@JsonIgnore
 	private String password;
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,mappedBy="user")
-	private List<Customer> customers;
 }
