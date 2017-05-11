@@ -1,0 +1,11 @@
+CREATE TABLE users(
+id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL COMMENT 'ユーザーID',
+username VARCHAR(255) NOT NULL COMMENT 'ユーザー名',
+password VARCHAR(255) NOT NULL COMMENT 'パスワード',
+email VARCHAR(255) NOT NULL COMMENT 'メールアドレス',
+role TINYINT NOT NULL COMMENT '権限(0:通常,127:管理者)',
+created TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'ユーザー登録日時',
+updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'ユーザー更新日時');
+
+INSERT INTO users(username,password,email,role)
+VALUES('admin','root','xxx@illmatics.co.jp',127);
