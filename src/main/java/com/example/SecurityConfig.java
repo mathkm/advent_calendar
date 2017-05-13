@@ -13,7 +13,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/webjars/**","/css/**");
+		web.ignoring().antMatchers("/","/webjars/**","/css/**");
 	}
 	
 	@Override
@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.loginProcessingUrl("/login")
 				.loginPage("/loginForm")
 				.failureUrl("/loginForm?error")
-				.defaultSuccessUrl("/customers",true)
+				.defaultSuccessUrl("/users",true)
 				.usernameParameter("username").passwordParameter("password")
 				.and().logout().logoutSuccessUrl("/loginForm");
 	}
