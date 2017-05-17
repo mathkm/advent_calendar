@@ -1,6 +1,7 @@
 package com.example;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -8,26 +9,26 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/","/webjars/**","/css/**");
+		web.ignoring().antMatchers("/webjars/**","/css/**");
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception{
 		http
 			.authorizeRequests()
-				.antMatchers("/loginForm").permitAll()
-				.anyRequest().authenticated()
-			.and()
-			.formLogin()
+				.antMatchers("/loginForm","/").permitAll()
+				.anyRequest().authenticated();
+		http.formLogin()
 			.loginProcessingUrl("/login")
 				.loginPage("/loginForm")
 				.failureUrl("/loginForm?error")
-				.defaultSuccessUrl("/userpage",true)
+				.defaultSuccessUrl("/users")
 				.usernameParameter("username").passwordParameter("password")
 				.and().logout().logoutSuccessUrl("/loginForm");
 	}
