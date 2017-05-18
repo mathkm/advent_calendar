@@ -21,6 +21,5 @@ public class UserForm {
 	private String email;
 	
 	@NotNull
-	@Size(min = 1,max = 127)
-	private Integer role;
+	private byte role;
 }

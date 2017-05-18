@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.domain.UserManage;
+import com.example.domain.User;
 import com.example.service.UserService;
 
 @Controller
@@ -26,7 +26,7 @@ public class UserController {
 	
 	@GetMapping
 	String list(Model model){
-		List<UserManage> users = userService.findAll();
+		List<User> users = userService.findAll();
 		model.addAttribute("users",users);
 		return "users/list";
 	}
@@ -36,7 +36,7 @@ public class UserController {
 		if(result.hasErrors()){
 			return list(model);
 		}
-		UserManage user = new UserManage();
+		User user = new User();
 		BeanUtils.copyProperties(form,user);
 		userService.create(user);
 		return "redirect:/users";
@@ -44,7 +44,7 @@ public class UserController {
 	
 	@GetMapping(path = "edit",params = "form")
 	String editForm(@RequestParam Integer id,UserForm form){
-		UserManage user = userService.findOne(id);
+		User user = userService.findOne(id);
 		BeanUtils.copyProperties(user,form);
 		return "users/edit";
 	}
@@ -54,7 +54,7 @@ public class UserController {
 		if(result.hasErrors()){
 			return editForm(id,form);
 		}
-		UserManage user = new UserManage();
+		User user = new User();
 		BeanUtils.copyProperties(form,user);
 		user.setId(id);
 		userService.update(user);

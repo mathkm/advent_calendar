@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.Date;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,8 +16,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "users")
 public class User {
+	private Integer id;
 	@Id
+	@GeneratedValue
+	@Column(nullable=false)
 	private String username;
 	@JsonIgnore
+	@Column(nullable=false)
 	private String password;
+	@Column(nullable=false)
+	private String email;
+	@Column(nullable=false)
+	private byte role;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date updated;
 }

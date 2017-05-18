@@ -19,22 +19,25 @@
 	<fieldset>
 	<legend>顧客情報設定</legend>
 	<div class="form-group">
-		<lable for="username" class="col-sm-2 control-label">username</lable>
+		<lable for="username" class="col-sm-2 control-label">ユーザーネーム</lable>
 		<div class="col-sm-10">
 		<input type="text" id="username" name="username" th:field="*{username}" class="form-control" value="" />
 		<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="help-block">error!</span>
 		</div>
+		<lable for="username" class="col-sm-2 control-label">パスワード</lable>
 		<div class="col-sm-10">
 		<input type="password" id="password" name="password" th:field="*{password}" class="form-control" value="" />
 		<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="help-block">error!</span>
 		</div>
+		<lable for="username" class="col-sm-2 control-label">メールアドレス</lable>
 		<div class="col-sm-10">
 		<input type="email" id="email" name="email" th:field="*{email}" class="form-control" value="" />
 		<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="help-block">error!</span>
 		</div>
+		<lable for="username" class="col-sm-2 control-label">権限</lable>
 		<div class="col-sm-10">
-		<input type="radio" name="role" value="1" checked="checked" id="role" th:field="*{role}" class="form-control">通常ユーザー
-		<input type="radio" name="role" value="127" id="role" th:field="*{role}" class="form-control">管理者
+		<input type="radio" name="role" value="1" checked="checked" id="role" th:field="*{role}" class="form-control" />通常ユーザー
+		<input type="radio" name="role" value="127" id="role" th:field="*{role}" class="form-control" />管理者
 		<span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="help-block">error!</span>
 		</div>
 	</div>
@@ -53,19 +56,19 @@
 	<th>登録日時</th>
 	<th colspan="2">編集</th>
 	</tr>
-	<tr th:each="user : ${user}">
-		<td th:text="${user.username}">100</td>
-		<td th:text="${user.created}">山田</td>
+	<tr th:each="users : ${users}">
+		<td th:text="${users.username}">admin</td>
+		<td th:text="${users.created}">2017/11/15</td>
 		<td>
 			<form th:action="@{/users/edit}" method="get">
 				<input class="btn btn-default" type="submit" name="form" value="編集" />
-				<input type="hidden" name="id" th:value="${user.id}" />
+				<input type="hidden" name="id" th:value="${users.id}" />
 			</form>
 		</td>
 		<td>
 			<form th:action="@{/users/delete}" method="post">
 				<input class="btn btn-danger" type="submit" value="削除" />
-				<input type="hidden" name="id" th:value="${user.id}" />
+				<input type="hidden" name="id" th:value="${users.id}" />
 			</form>
 		</td>
 	</tr>
