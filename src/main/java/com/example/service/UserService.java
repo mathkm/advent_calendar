@@ -23,6 +23,10 @@ public class UserService {
 		return userRepository.findOne(id);
 	}
 	
+	public User findByUsername(String username){
+		return userRepository.findByUsername(username);
+	}
+	
 	public User create(User user){
 		return userRepository.save(user);
 	}
@@ -31,7 +35,7 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
-	public void delete (Integer id){
+	public void delete(Integer id){
 		userRepository.delete(id);
 	}
 

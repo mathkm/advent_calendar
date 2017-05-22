@@ -16,9 +16,10 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "users")
 public class User {
-	private Integer id;
 	@Id
 	@GeneratedValue
+	@Column(nullable=false)
+	private Integer id;
 	@Column(nullable=false)
 	private String username;
 	@JsonIgnore
