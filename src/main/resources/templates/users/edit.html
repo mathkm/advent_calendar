@@ -4,15 +4,15 @@
 <meta charset="UTF-8" />
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.min.css}" />
-<title>顧客情報編集</title>
+<title>ユーザー編集</title>
 </head>
 <body>
 <div class="container">
-<h1>顧客管理システム</h1>
+<h1>ユーザー情報編集</h1>
 <div class="col-sm-12">
 <form th:action="@{/users/edit}" th:object="${userForm}" method="post" class="form-horizontal">
 <fieldset>
-<legend>顧客情報編集</legend>
+<legend>ユーザー情報編集</legend>
 	<div class="form-group" th:classapend="${#fields.hasErrors('username')}? 'has-error has-feedback'">
 		<label for="lastName" class="col-sm-2 control-label">ユーザーネーム</label>
 		<div class="col-sm-10">

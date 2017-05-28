@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 // API名考えるとこれ
 
 public class GenPassword {
-	public static void main(String[] args){
-		System.out.printf(new Pbkdf2PasswordEncoder().encode("root"));
+	public static void main(String[] args) {
+		System.out.printf(new Pbkdf2PasswordEncoder().encode("mtkcom"));
 	}
 }
