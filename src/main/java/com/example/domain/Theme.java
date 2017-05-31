@@ -31,7 +31,7 @@ public class Theme {
 	@Column(nullable = false)
 	private Date calendar_month;
 	@Column(nullable = false, name = "enable_dates", length = 512, columnDefinition = "TEXT")
-	private Date enable_dates;
+	private int[] enable_dates;
 	@Column(nullable = false)
 	private Integer created_user_id;
 	@Temporal(TemporalType.TIMESTAMP)

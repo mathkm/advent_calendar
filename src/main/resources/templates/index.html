@@ -2,15 +2,237 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <meta charset="UTF-8" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+
+	//モーダルウィンドウを出現させるクリックイベント
+	$("#modal-open").click( function(){
+
+		//キーボード操作などにより、オーバーレイが多重起動するのを防止する
+		$( this ).blur() ;	//ボタンからフォーカスを外す
+		if( $( "#modal-overlay" )[0] ) return false ;		//新しくモーダルウィンドウを起動しない (防止策1)
+		//if($("#modal-overlay")[0]) $("#modal-overlay").remove() ;		//現在のモーダルウィンドウを削除して新しく起動する (防止策2)
+
+		//オーバーレイを出現させる
+		$( "body" ).append( '<div id="modal-overlay"></div>' ) ;
+		$( "#modal-overlay" ).fadeIn( "slow" ) ;
+
+		//コンテンツをセンタリングする
+		centeringModalSyncer() ;
+
+		//コンテンツをフェードインする
+		$( "#modal-content" ).fadeIn( "slow" ) ;
+
+		//[#modal-overlay]、または[#modal-close]をクリックしたら…
+		$( "#modal-overlay,#modal-close" ).unbind().click( function(){
+
+			//[#modal-content]と[#modal-overlay]をフェードアウトした後に…
+			$( "#modal-content,#modal-overlay" ).fadeOut( "slow" , function(){
+
+				//[#modal-overlay]を削除する
+				$('#modal-overlay').remove() ;
+
+			} ) ;
+
+		} ) ;
+
+	} ) ;
+
+	//リサイズされたら、センタリングをする関数[centeringModalSyncer()]を実行する
+	$( window ).resize( centeringModalSyncer ) ;
+
+		//センタリングを実行する関数
+		function centeringModalSyncer() {
+
+			//画面(ウィンドウ)の幅、高さを取得
+			var w = $( window ).width() ;
+			var h = $( window ).height() ;
+
+			// コンテンツ(#modal-content)の幅、高さを取得
+			// jQueryのバージョンによっては、引数[{margin:true}]を指定した時、不具合を起こします。
+//			var cw = $( "#modal-content" ).outerWidth( {margin:true} );
+//			var ch = $( "#modal-content" ).outerHeight( {margin:true} );
+			var cw = $( "#modal-content" ).outerWidth();
+			var ch = $( "#modal-content" ).outerHeight();
+
+			//センタリングを実行する
+			$( "#modal-content" ).css( {"left": ((w - cw)/2) + "px","top": ((h - ch)/2) + "px"} ) ;
+
+		}
+
+	} ) ;
+	
+$(function(){
+
+	//モーダルウィンドウを出現させるクリックイベント
+	$("#modal-open2").click( function(){
+
+		//キーボード操作などにより、オーバーレイが多重起動するのを防止する
+		$( this ).blur() ;	//ボタンからフォーカスを外す
+		if( $( "#modal-overlay" )[0] ) return false ;		//新しくモーダルウィンドウを起動しない (防止策1)
+		//if($("#modal-overlay")[0]) $("#modal-overlay").remove() ;		//現在のモーダルウィンドウを削除して新しく起動する (防止策2)
+
+		//オーバーレイを出現させる
+		$( "body" ).append( '<div id="modal-overlay"></div>' ) ;
+		$( "#modal-overlay" ).fadeIn( "slow" ) ;
+
+		//コンテンツをセンタリングする
+		centeringModalSyncer() ;
+
+		//コンテンツをフェードインする
+		$( "#modal-content2" ).fadeIn( "slow" ) ;
+
+		//[#modal-overlay]、または[#modal-close]をクリックしたら…
+		$( "#modal-overlay,#modal-close" ).unbind().click( function(){
+
+			//[#modal-content]と[#modal-overlay]をフェードアウトした後に…
+			$( "#modal-content2,#modal-overlay" ).fadeOut( "slow" , function(){
+
+				//[#modal-overlay]を削除する
+				$('#modal-overlay').remove() ;
+
+			} ) ;
+
+		} ) ;
+
+	} ) ;
+
+	//リサイズされたら、センタリングをする関数[centeringModalSyncer()]を実行する
+	$( window ).resize( centeringModalSyncer ) ;
+
+		//センタリングを実行する関数
+		function centeringModalSyncer() {
+
+			//画面(ウィンドウ)の幅、高さを取得
+			var w = $( window ).width() ;
+			var h = $( window ).height() ;
+
+			// コンテンツ(#modal-content)の幅、高さを取得
+			// jQueryのバージョンによっては、引数[{margin:true}]を指定した時、不具合を起こします。
+//			var cw = $( "#modal-content2" ).outerWidth( {margin:true} );
+//			var ch = $( "#modal-content" ).outerHeight( {margin:true} );
+			var cw = $( "#modal-content2" ).outerWidth();
+			var ch = $( "#modal-content2" ).outerHeight();
+
+			//センタリングを実行する
+			$( "#modal-content2" ).css( {"left": ((w - cw)/2) + "px","top": ((h - ch)/2) + "px"} ) ;
+
+		}
+
+	} ) ;
+
+</script>
 <title>アドベントカレンダー</title>
 </head>
 <body>
-<a href="/loginForm" th:if="${hasRole = null}">ログインページ</a>
-<table>
+<table border="1">
+<tbody>
 <tr>
-<a href = "/createtheme" sec:authorize="hasRole('ROLE_USER')">記事作成</a>
-<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a>
+	<th colspan="6">
+		<h2>アドベントカレンダー</h2>
+	</th>
+	<td>
+<!--
+	権限による表示分けについてはこちらを参照。 
+	https://terasolunaorg.github.io/guideline/public_review/Security/Authorization.html#url
+ -->
+		<a href="/loginForm" sec:authorize="isAnonymous()">ログイン</a><br sec:authorize="isAnonymous()" />
+		<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()"><input type="submit" class="btn btn-default btn-xs" value="ログアウト" /></form>
+		<img src="/icon/usericon.jpg" sec:authorize="isAuthenticated()" width="50px" height="50px" />
+		<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">duke　さん</span><br sec:authorize="isAuthenticated()" />
+		<a href = "/createarticle" sec:authorize="isAuthenticated()">記事作成</a>
+		<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a>
+	</td>
 </tr>
+<tr>
+	<th colspan="7" align="center">
+		←　＊＊＊＊年　＊月　→
+	</th>
+</tr>
+<tr>
+	<td colspan="7" align="center">
+	テーマ<br />
+	Javaについて
+	</td>
+</tr>
+<tr>
+	<td>日</td>
+	<td>月</td>
+	<td>火</td>
+	<td>水</td>
+	<td>木</td>
+	<td>金</td>
+	<td>日</td>
+</tr>
+<tr>
+	<td>
+		1<br />
+		<img src="/icon/usericon.jpg" width="50px" height="50px" /><br />
+		mathkm<br />
+		<a href="#">Javaでじゃんけんプログラムを作ってみる</a>
+	</td>
+	<td>
+		2<br />
+		<a href="#">登録</a>
+	</td>
+	<td>
+		3<br />
+		<font color="grey">登録不可</font><br />
+	</td>
+		<td>
+		4<br />
+		<a href="#">登録</a>
+	</td>
+		<td>
+		5<br />
+		<a href="#">登録</a>
+	</td>
+		<td>
+		6<br />
+		<a href="#">登録</a>
+	</td>
+		<td>
+		7<br />
+		<a href="#">登録</a>
+	</td>
+</tr>
+</tbody>
 </table>
+<p><a id="modal-open" class="button-link">記事登録</a></p>
+<p><a id="modal-open2" class="button-link">記事更新</a></p>
+
+<div id="modal-content">
+<p><a id="modal-close" class="button-link">閉じる</a></p>
+<form method="post" action="">
+<h2>記事登録</h2>
+登録日付<br />
+2017/05/31<br />
+<div>
+error!
+</div>
+タイトル：<input type="text" name="title" placeholder="タイトル" required="required" autofocus="autofocus" />
+URL：<input type="text" name="url" placeholder="URL" required="required" />
+<button class="btn btn-1g btn-primary btn-block" type="submit">投稿</button>
+</form>
+</div>
+
+<div id="modal-content2">
+<p><a id="modal-close" class="button-link">閉じる</a></p>
+<form method="post" action="">
+<h2>記事更新</h2>
+登録日付<br />
+2017/05/31<br />
+<div>
+error!
+</div>
+タイトル：<input type="text" name="title" placeholder="タイトル" required="required" autofocus="autofocus" />
+URL：<input type="text" name="url" placeholder="URL" required="required" />
+<button class="btn btn-1g btn-primary btn-block" type="submit">投稿</button>
+</form>
+</div>
+
 </body>
 </html>
