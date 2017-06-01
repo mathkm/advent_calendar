@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<title>アドベントカレンダー</title>
+</head>
+<body>
+
+<form method="post" action="">
+<button type="submit" name="" value="">
+追加
+</button>
+</form>
+
+<table border="1">
+<tbody>
+<tr>
+	<th colspan="6">
+		<h2>テーマ一覧</h2>
+	</th>
+	<td>
+<!--
+	権限による表示分けについてはこちらを参照。 
+	https://terasolunaorg.github.io/guideline/public_review/Security/Authorization.html#url
+ -->
+		<a href="/loginForm" sec:authorize="isAnonymous()">ログイン</a><br sec:authorize="isAnonymous()" />
+		<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()"><input type="submit" class="btn btn-default btn-xs" value="ログアウト" /></form>
+		<img src="/icon/usericon.jpg" sec:authorize="isAuthenticated()" width="50px" height="50px" />
+		<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">duke　さん</span><br sec:authorize="isAuthenticated()" />
+		<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a>
+	</td>
+</tr>
+<tr>
+	<th align="center">
+	カレンダー
+	</th>
+	<th align="center">
+	テーマ
+	</th>
+</tr>
+<tr>
+	<td align="center">
+	****/**
+	</td>
+	<td align="center">
+	Javaについて
+	</td>
+</tr>
+</tbody>
+</table>
+
+
+</body>
+</html>

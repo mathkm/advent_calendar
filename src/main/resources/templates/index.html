@@ -143,8 +143,8 @@ $(function(){
 		<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()"><input type="submit" class="btn btn-default btn-xs" value="ログアウト" /></form>
 		<img src="/icon/usericon.jpg" sec:authorize="isAuthenticated()" width="50px" height="50px" />
 		<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">duke　さん</span><br sec:authorize="isAuthenticated()" />
-		<a href = "/createarticle" sec:authorize="isAuthenticated()">記事作成</a>
-		<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a>
+		<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a><br />
+		<a href = "/themes" sec:authorize="hasRole('ROLE_ADMIN')">テーマ管理</a>
 	</td>
 </tr>
 <tr>
@@ -171,12 +171,13 @@ $(function(){
 	<td>
 		1<br />
 		<img src="/icon/usericon.jpg" width="50px" height="50px" /><br />
-		mathkm<br />
-		<a href="#">Javaでじゃんけんプログラムを作ってみる</a>
+		matsuo-k<br />
+		<a href="#">Javaでじゃんけんプログラムを作ってみる</a><br />
+		<a id="modal-open2" class="button-link">記事更新</a>
 	</td>
 	<td>
 		2<br />
-		<a href="#">登録</a>
+		<a id="modal-open" class="button-link">記事登録</a>
 	</td>
 	<td>
 		3<br />
@@ -184,25 +185,23 @@ $(function(){
 	</td>
 		<td>
 		4<br />
-		<a href="#">登録</a>
+		<a id="modal-open" class="button-link">記事登録</a>
 	</td>
 		<td>
 		5<br />
-		<a href="#">登録</a>
+		<a id="modal-open" class="button-link">記事登録</a>
 	</td>
 		<td>
 		6<br />
-		<a href="#">登録</a>
+		<a id="modal-open" class="button-link">記事登録</a>
 	</td>
 		<td>
 		7<br />
-		<a href="#">登録</a>
+		<a id="modal-open" class="button-link">記事登録</a>
 	</td>
 </tr>
 </tbody>
 </table>
-<p><a id="modal-open" class="button-link">記事登録</a></p>
-<p><a id="modal-open2" class="button-link">記事更新</a></p>
 
 <div id="modal-content">
 <p><a id="modal-close" class="button-link">閉じる</a></p>

@@ -9,4 +9,4 @@ updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 
 ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO users(username,password,email,role)
-VALUES('admin','d4a2e4a0d00f43d2082d4afd840a244dee0a1383f9b950cda05ec6630d9e210fd8f062c9026360b9','xxx@illmatics.co.jp',127);
+VALUES('admin','d4a2e4a0d00f43d2082d4afd840a244dee0a1383f9b950cda05ec6630d9e210fd8f062c9026360b9','xxx@illmatics.co.jp','127');
