@@ -28,16 +28,16 @@ public class Theme {
 	private String name;
 	@Column(nullable = false, name = "detail", length = 512, columnDefinition = "TEXT")
 	private String detail;
-	@Column(nullable = false)
-	private Date calendar_month;
+	@Column(nullable = false, name = "calendar_month")
+	private Date calendarmonth;
 	@Column(nullable = false, name = "enable_dates", length = 512, columnDefinition = "TEXT")
-	private int[] enable_dates;
-	@Column(nullable = false)
-	private Integer created_user_id;
+	private int[] enabledates;
+	@Column(nullable = false, name = "created_user_id")
+	private Integer createduserid;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
-	@Column(nullable = false)
-	private Integer updated_user_id;
+	@Column(nullable = false, name = "updated_user_id")
+	private Integer updateduserid;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updated;
 }

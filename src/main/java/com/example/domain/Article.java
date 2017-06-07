@@ -24,10 +24,10 @@ public class Article {
 	@GeneratedValue
 	@Column(nullable = false)
 	private Integer id;
-	@Column(nullable = false)
-	private Date calendar_date;
-	@Column(nullable = false)
-	private Integer user_id;
+	@Column(nullable = false, name = "calendar_date")
+	private Date calendardate;
+	@Column(nullable = false, name = "user_id")
+	private Integer userid; // String?
 	@Column(nullable = false, name = "title", length = 512, columnDefinition = "TEXT")
 	private String title;
 	@Column(nullable = false, name = "url", length = 512, columnDefinition = "TEXT")

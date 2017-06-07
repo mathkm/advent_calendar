@@ -1,13 +1,9 @@
 package com.example.domain;
 
-import java.util.Date;
-import javax.persistence.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.repository.ArticleRepository;
 import com.example.repository.ThemeRepository;
-
-import lombok.Data;
 
 public class CalendarDay {
 	@Autowired
@@ -16,23 +12,23 @@ public class CalendarDay {
 	ThemeRepository themeRepository;
 
 	public boolean isAvalable() {
-		if(){
-		return true;
-		}else{
+		if (true) {
+			return true;
+		} else {
 			return false;
 		}
 	}
 
 	public boolean isEnabled() {
-		if(){
-		return true;
-		}else{
+		if (true) {
+			return true;
+		} else {
 			return false;
 		}
 	}
 
 	public boolean isRegistered() {
-		if () {
+		if (true) {
 			return true;
 		} else {
 			return false;
