@@ -1,6 +1,6 @@
 package com.example.service;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +27,8 @@ public class ArticleService {
 	}
 
 	// カレンダーの日付から記事を取得
-	public Article findByCalendardate(Date calendardate) {
-		return articleRepository.findByCalendardate(calendardate);
+	public Article findByCalendardate(Calendar calendardate) {
+		return articleRepository.findOneByCalendarDate(calendardate);
 	}
 
 	// 記事の作成

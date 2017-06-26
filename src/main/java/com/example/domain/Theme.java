@@ -29,9 +29,9 @@ public class Theme {
 	@Column(nullable = false, name = "detail", length = 512, columnDefinition = "TEXT")
 	private String detail;
 	@Column(nullable = false, name = "calendar_month")
-	private Date calendarmonth;
-	@Column(nullable = false, name = "enable_dates", length = 512, columnDefinition = "TEXT")
-	private int[] enabledates;
+	private int calendarmonth;
+	@Column(nullable = false, name = "enabled_dates", length = 512, columnDefinition = "TEXT")
+	private int[] enableddates;
 	@Column(nullable = false, name = "created_user_id")
 	private Integer createduserid;
 	@Temporal(TemporalType.TIMESTAMP)
