@@ -1,7 +1,10 @@
 package com.example.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -22,47 +25,78 @@ public class AdventCalendarService {
 
 	public List<CalendarDay> generateCalendarDays(Theme theme) {
 
-		List<CalendarDay> cld = new ArrayList();
+		List<CalendarDay> cld = new ArrayList<CalendarDay>();
 
 		Calendar calendar = Calendar.getInstance();
 
-		int calendarMonth = theme.getCalendarmonth();
+		//getCalrndarmonthからカレンダーの日付（yyyy/mm/dd）を取得
+		Date gotMonth = theme.getCalendarmonth();
+		
+		//カレンダー内で比較できるように月、年を抽出
+		SimpleDateFormat mm = new SimpleDateFormat("MM");
+		SimpleDateFormat yyyy = new SimpleDateFormat("yyyy");
+		String stringMonth = mm.format(gotMonth);
+		String stringYear = yyyy.format(gotMonth);
+		
+		//この情報からカレンダーを作ります
+		int month = Integer.parseInt(stringMonth);
+		int year= Integer.parseInt(stringYear);
+		
+		//有効な日付を取得
 		int[] enableddates = theme.getEnableddates();
 
-		int year = calendar.get(Calendar.YEAR);
-		int month = calendar.get(Calendar.MONTH);
-		int day = calendar.get(Calendar.DATE);
-
+		//calendar型はこれじゃダメな気がするので明日聞く。
 		CalendarDay calendarDay = new CalendarDay(month, calendar);
 
-		/* 今月が何曜日から開始されているか確認する */
+		// 今月が何曜日から開始されているか確認する 
 		calendar.set(year, month, 1);
 		int startWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
-		/* 先月が何日までだったかを確認する */
+		// 先月が何日までだったかを確認する
 		calendar.set(year, month, 0);
 		int beforeMonthlastDay = calendar.get(Calendar.DATE);
 
-		/* 今月が何日までかを確認する */
+		// 今月が何日までかを確認する
 		calendar.set(year, month + 1, 0);
 		int thisMonthlastDay = calendar.get(Calendar.DATE);
 
-		/* 先月分の日付を格納する */
+		// 先月分の日付を格納する
 		for (int i = startWeek - 2; i >= 0; i--) {
+			
+			if(Arrays.asList(enableddates).contains(beforeMonthlastDay)){
 			cld.add(beforeMonthlastDay - i, calendarDay);
+			}else{
+				cld.add(beforeMonthlastDay - i, null);
+			}
+			
 		}
 
-		/* 今月分の日付を格納する */
+		// 今月分の日付を格納する
 		for (int i = 1; i <= thisMonthlastDay; i++) {
+			
+			if(Arrays.asList(enableddates).contains(i)){
 			cld.add(i, calendarDay);
+			}else{
+				cld.add(i,null);
+			}
+			
 		}
 
-		/* 翌月分の日付を格納する */
+		// 翌月分の日付を格納する
 		int nextMonthDay = 1;
-		while (cld.size() % 7 != 0) {
-			cld.add(nextMonthDay++, calendarDay);
+		
+		if (Arrays.asList(enableddates).contains(nextMonthDay)){
+			
+			while (cld.size() % 7 != 0) {
+				cld.add(nextMonthDay++, calendarDay);
+			}
+		}else{
+			while(cld.size() % 7 != 0){	
+				cld.add(nextMonthDay++, null);
+			}
+			
 		}
-
+		
 		return cld;
 	}
 }

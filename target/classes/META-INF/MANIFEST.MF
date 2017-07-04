@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: advent_calendar
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: KOUSUKE
+Built-By: matsuo-k
 Implementation-Vendor-Id: com.example
-Build-Jdk: 1.8.0_131
+Build-Jdk: 1.8.0_121
 Implementation-URL: http://projects.spring.io/spring-boot/advent_calen
  dar/
 Created-By: Maven Integration for Eclipse

@@ -29,7 +29,7 @@ public class Theme {
 	@Column(nullable = false, name = "detail", length = 512, columnDefinition = "TEXT")
 	private String detail;
 	@Column(nullable = false, name = "calendar_month")
-	private int calendarmonth;
+	private Date calendarmonth;
 	@Column(nullable = false, name = "enabled_dates", length = 512, columnDefinition = "TEXT")
 	private int[] enableddates;
 	@Column(nullable = false, name = "created_user_id")
