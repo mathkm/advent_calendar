@@ -29,7 +29,7 @@ public class AdventCalendarService {
 
 		Calendar calendar = Calendar.getInstance();
 
-		//getCalrndarmonthからカレンダーの日付（yyyy/mm/dd）を取得
+		//多分違う。最初に表示するのは当月のカレンダーのはず。
 		Date gotMonth = theme.getCalendarmonth();
 		
 		//カレンダー内で比較できるように月、年を抽出
@@ -38,14 +38,14 @@ public class AdventCalendarService {
 		String stringMonth = mm.format(gotMonth);
 		String stringYear = yyyy.format(gotMonth);
 		
-		//この情報からカレンダーを作ります
+		//DBの情報からカレンダーを作ります
 		int month = Integer.parseInt(stringMonth);
 		int year= Integer.parseInt(stringYear);
 		
 		//有効な日付を取得
 		int[] enableddates = theme.getEnableddates();
-
-		//calendar型はこれじゃダメな気がするので明日聞く。
+		
+		//calendarはこれじゃダメな気がするので明日聞く。
 		CalendarDay calendarDay = new CalendarDay(month, calendar);
 
 		// 今月が何曜日から開始されているか確認する 
@@ -63,13 +63,8 @@ public class AdventCalendarService {
 		// 先月分の日付を格納する
 		for (int i = startWeek - 2; i >= 0; i--) {
 			
-			if(Arrays.asList(enableddates).contains(beforeMonthlastDay)){
-			cld.add(beforeMonthlastDay - i, calendarDay);
-			}else{
 				cld.add(beforeMonthlastDay - i, null);
 			}
-			
-		}
 
 		// 今月分の日付を格納する
 		for (int i = 1; i <= thisMonthlastDay; i++) {
@@ -85,17 +80,9 @@ public class AdventCalendarService {
 		// 翌月分の日付を格納する
 		int nextMonthDay = 1;
 		
-		if (Arrays.asList(enableddates).contains(nextMonthDay)){
-			
-			while (cld.size() % 7 != 0) {
-				cld.add(nextMonthDay++, calendarDay);
-			}
-		}else{
 			while(cld.size() % 7 != 0){	
 				cld.add(nextMonthDay++, null);
 			}
-			
-		}
 		
 		return cld;
 	}
