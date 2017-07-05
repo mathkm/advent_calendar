@@ -42,11 +42,11 @@ public class AdventCalendarService {
 		int month = Integer.parseInt(stringMonth);
 		int year= Integer.parseInt(stringYear);
 		
-		//有効な日付を取得
-		int[] enableddates = theme.getEnableddates();
-		
 		//calendarはこれじゃダメな気がするので明日聞く。
 		CalendarDay calendarDay = new CalendarDay(month, calendar);
+		
+		//有効な日付を取得
+		int[] enableddates = theme.getEnableddates();
 
 		// 今月が何曜日から開始されているか確認する 
 		calendar.set(year, month, 1);

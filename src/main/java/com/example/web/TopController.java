@@ -35,10 +35,10 @@ public class TopController {
 	
 	@GetMapping
 	String list(Model model) {
-		List<CalendarDay> calendar = adventCalendar.generateCalendarDays();
-		List<Theme> theme = themeService.findOne();
-		model.addAttribute("calendar", calendar);
-		model.addAttribute("theme",theme);
+		//List<CalendarDay> calendar = adventCalendar.generateCalendarDays();
+		//List<Theme> theme = themeService.findOne();
+		//model.addAttribute("calendar", calendar);
+		//model.addAttribute("theme",theme);
 		return "/index";
 	}
 
