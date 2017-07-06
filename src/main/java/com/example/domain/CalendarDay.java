@@ -2,7 +2,6 @@ package com.example.domain;
 
 import java.util.Arrays;
 import java.util.Calendar;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.repository.ArticleRepository;
@@ -15,11 +14,12 @@ public class CalendarDay {
 	@Autowired
 	ThemeRepository themeRepository;
 
-	private int calendarMonth;
-	private Calendar calendarDate;
-	private int[] enabledDates;
-	private int onlyDate = calendarDate.get(Calendar.DATE);
-	private int onlyMonth = calendarDate.get(Calendar.MONTH);
+	int calendarMonth;
+	Calendar calendarDate = Calendar.getInstance();
+	Theme theme = themeRepository.findOneByCalendarMonth(calendarMonth);
+	int[] enabledDates = theme.getEnableddates();
+	int onlyDate = calendarDate.get(Calendar.DATE);
+	int onlyMonth = calendarDate.get(Calendar.MONTH);
 
 	public CalendarDay(int calendarMonth, Calendar calendarDate) {
 		this.calendarMonth = calendarMonth;
