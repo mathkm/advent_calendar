@@ -26,7 +26,7 @@ public class Article {
 	@Column(nullable = false)
 	private Integer id;
 	@Column(nullable = false, name = "calendar_date")
-	private Calendar calendardate;
+	private Calendar calendarDate;
 	@Column(nullable = false, name = "user_id")
 	private Integer userid;
 	@Column(nullable = false, name = "title", length = 512, columnDefinition = "TEXT")

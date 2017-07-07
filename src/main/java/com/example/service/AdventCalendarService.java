@@ -1,5 +1,7 @@
 package com.example.service;
 
+import java.util.Date;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -24,10 +26,11 @@ public class AdventCalendarService {
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH);
+    	cal.set(year,month,1);
+		Date calendarMonth = cal.getTime();
 		
 		List<CalendarDay> list = new ArrayList<CalendarDay>();
 		
-    	cal.set(year,month,1);
 		int subDay = cal.get(Calendar.DAY_OF_WEEK) - 7;
         if (subDay < 0) {
 
@@ -37,11 +40,10 @@ public class AdventCalendarService {
 
         boolean flag = true;
         
-        CalendarDay calendarDay = new CalendarDay(month,cal);
+        CalendarDay calendarDay = new CalendarDay(calendarMonth,cal);
         
-        int i;
         while(flag == true){
-        	for(i = 1 ; i == 7 ; i++){
+        	for(int i = 1 ; i == 7 ; i++){
         			
         		cal.add(Calendar.DAY_OF_MONTH, i);
         		list.add(calendarDay);

@@ -29,15 +29,15 @@ public class Theme {
 	@Column(nullable = false, name = "detail", length = 512, columnDefinition = "TEXT")
 	private String detail;
 	@Column(nullable = false, name = "calendar_month")
-	private Date calendarmonth;
+	private Date calendarMonth;
 	@Column(nullable = false, name = "enabled_dates", length = 512, columnDefinition = "TEXT")
-	private int[] enableddates;
+	private int[] enabledDates;
 	@Column(nullable = false, name = "created_user_id")
-	private Integer createduserid;
+	private Integer createdUserid;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
 	@Column(nullable = false, name = "updated_user_id")
-	private Integer updateduserid;
+	private Integer updatedUserid;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updated;
 }

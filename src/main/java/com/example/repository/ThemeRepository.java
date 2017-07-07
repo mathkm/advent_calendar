@@ -11,5 +11,5 @@ public interface ThemeRepository extends JpaRepository<Theme,Date> {
 	@Query("SELECT x FROM Theme x ORDER BY x.id")
 	Theme findAllOrderById();
 	@Query("SELECT x FROM Theme x WHERE calendarMonth = :calendar_month")
-	public Theme findOneByCalendarMonth(@Param("calendar_month")int calendarMonth);
+	public Theme findOneByCalendarMonth(@Param("calendar_month")Date calendarMonth);
 }
