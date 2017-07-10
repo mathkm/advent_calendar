@@ -1,7 +1,8 @@
 package com.example.service;
 
 import java.util.Date;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -26,8 +27,12 @@ public class AdventCalendarService {
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH);
-    	cal.set(year,month,1);
-		Date calendarMonth = cal.getTime();
+    	cal.set(year,month,1,0,0,0);
+    	int getYear = cal.get(Calendar.YEAR);
+    	int getMonth = cal.get(Calendar.MONTH) + 1;
+    	int getDay = cal.get(Calendar.DAY_OF_MONTH);
+    	String strCalendarMonth = getYear + "0" + getMonth + "0" + getDay;
+    	int calendarMonth = Integer.parseInt(strCalendarMonth);
 		
 		List<CalendarDay> list = new ArrayList<CalendarDay>();
 		

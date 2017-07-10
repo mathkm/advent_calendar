@@ -10,5 +10,5 @@ import com.example.domain.Article;
 
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
 	@Query("SELECT x FROM Article x WHERE calendarDate = :calendar_date")
-	Article findOneByCalendarDate(@Param("calendar_date") Calendar calendarDate);
+	Article findByCalendarDate(@Param("calendar_date") Calendar calendarDate);
 }
