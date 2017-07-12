@@ -19,7 +19,6 @@ import com.example.domain.Theme;
 import com.example.repository.ThemeRepository;
 
 @Service
-@Transactional
 public class AdventCalendarService {
 
 	public List<CalendarDay> generateCalendarDays() {
