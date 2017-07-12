@@ -27,12 +27,9 @@ public class AdventCalendarService {
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH);
     	cal.set(year,month,1,0,0,0);
-    	int getYear = cal.get(Calendar.YEAR);
-    	int getMonth = cal.get(Calendar.MONTH) + 1;
-    	int getDay = cal.get(Calendar.DAY_OF_MONTH);
-    	String strCalendarMonth = getYear + "0" + getMonth + "0" + getDay;
-    	int calendarMonth = Integer.parseInt(strCalendarMonth);
-		
+    	Date calendarMonth = cal.getTime();
+    	CalendarDay calendarDay = new CalendarDay(calendarMonth,cal);
+    	
 		List<CalendarDay> list = new ArrayList<CalendarDay>();
 		
 		int subDay = cal.get(Calendar.DAY_OF_WEEK) - 7;
@@ -43,8 +40,6 @@ public class AdventCalendarService {
         }
 
         boolean flag = true;
-        
-        CalendarDay calendarDay = new CalendarDay(calendarMonth,cal);
         
         while(flag == true){
         	for(int i = 1 ; i == 7 ; i++){
