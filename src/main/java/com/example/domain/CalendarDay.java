@@ -1,42 +1,36 @@
 package com.example.domain;
 
-import java.sql.Date;
-import java.sql.Date;
-import java.util.TimeZone;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
-
+import java.util.Date;
+import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.example.repository.ArticleRepository;
 import com.example.repository.ThemeRepository;
-
-import lombok.RequiredArgsConstructor;
+import com.example.service.AdventCalendarService;
+import com.example.service.ArticleService;
+import com.example.service.ThemeService;
 
 @Component
+@Scope("prototype")
 public class CalendarDay{
-	@Autowired
-	private ThemeRepository themeRepository;
-	@Autowired
-	private ArticleRepository articleRepository;
+	//@Qualifier("com.example.service.ThemeService")
+	//@Autowired
+	private ThemeService themeService;
+	//@Qualifier("com.example.service.ArticleService")
+	//@Autowired
+	private ArticleService articleService;
 	
 	// カレンダーの年月日
-	java.util.Date calendarMonth;
+	public Date calendarMonth;
 	// articleの日付
 	Calendar calendarDate;	
 	Theme theme;
@@ -48,26 +42,19 @@ public class CalendarDay{
 	SimpleDateFormat dd;
 	SimpleDateFormat yyyymm;
 	
-	public CalendarDay(java.util.Date calendarMonth,Calendar calendarDate){
+	@Autowired
+	public CalendarDay(Date calendarMonth,Calendar calendarDate){
 		this.calendarMonth = calendarMonth;
 		this.calendarDate = calendarDate;
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(calendarMonth);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		java.sql.Date sqlcalendarMonth = new java.sql.Date(cal.getTimeInMillis());
 		getArticle(calendarDate);
 		isAvalable(calendarDate);
-		isEnabled(sqlcalendarMonth,calendarDate);
+		isEnabled(calendarMonth,calendarDate);
 		isRegistered(calendarDate);
 	}
 		
 	// Articleを取得
-	@Bean
 	public Article getArticle(Calendar calendarDate) {
-		Article article = articleRepository.findByCalendarDate(calendarDate);
+		Article article = articleService.findByCalendarDate(calendarDate);
 		return article;
 	}
 
@@ -89,8 +76,8 @@ public class CalendarDay{
 	}
 
 	// テーマで許可されている日に存在していればtrue
-	public boolean isEnabled(java.sql.Date sqlcalendarMonth,Calendar calendarDate) {
-		theme = themeRepository.findByCalendarMonth(sqlcalendarMonth);
+	public boolean isEnabled(Date calendarMonth,Calendar calendarDate) {
+		theme = themeService.findByCalendarMonth(calendarMonth);
 		enabledDates = theme.getEnabledDates();
 		articleDay = dd.format(articleDate);
 		if (Arrays.asList(enabledDates).contains(articleDay)) {

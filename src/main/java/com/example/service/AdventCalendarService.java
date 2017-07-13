@@ -12,6 +12,9 @@ import java.util.TimeZone;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.example.domain.CalendarDay;
@@ -28,9 +31,16 @@ public class AdventCalendarService {
 		int month = cal.get(Calendar.MONTH);
     	cal.set(year,month,1,0,0,0);
     	Date calendarMonth = cal.getTime();
-    	CalendarDay calendarDay = new CalendarDay(calendarMonth,cal);
+		//cal.setTime(calendarMonth);
+		//cal.set(Calendar.HOUR_OF_DAY, 0);
+		//cal.set(Calendar.MINUTE, 0);
+		//cal.set(Calendar.SECOND, 0);
+		//cal.set(Calendar.MILLISECOND, 0);
+		//Date calendarMonth = new java.sql.Date(cal.getTimeInMillis());
     	
 		List<CalendarDay> list = new ArrayList<CalendarDay>();
+		
+		CalendarDay calendarDay = new CalendarDay(calendarMonth,cal);
 		
 		int subDay = cal.get(Calendar.DAY_OF_WEEK) - 7;
         if (subDay < 0) {
@@ -40,10 +50,10 @@ public class AdventCalendarService {
         }
 
         boolean flag = true;
-        
+        //ここもたぶんおかしいです
         while(flag == true){
         	for(int i = 1 ; i == 7 ; i++){
-        			
+        		
         		cal.add(Calendar.DAY_OF_MONTH, i);
         		list.add(calendarDay);
         		

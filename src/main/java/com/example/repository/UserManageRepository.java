@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Component
 public interface UserManageRepository extends JpaRepository<User,Integer> {
 	@Query("SELECT x FROM User x ORDER BY x.id")
 	List<User> findAllOrderById();

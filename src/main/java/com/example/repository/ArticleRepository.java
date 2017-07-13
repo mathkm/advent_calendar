@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.example.domain.Article;
 
-@Component
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
 	@Query("SELECT x FROM Article x WHERE calendarDate = :calendar_date")
 	Article findByCalendarDate(@Param("calendar_date") Calendar calendarDate);

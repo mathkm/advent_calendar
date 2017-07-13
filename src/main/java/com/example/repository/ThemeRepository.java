@@ -1,8 +1,7 @@
 package com.example.repository;
 
-import java.sql.Date;
+import java.util.Date;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.domain.Theme;
 
-@Component
+@Repository
 public interface ThemeRepository extends JpaRepository<Theme,Integer> {
 	//@Query("SELECT x FROM Theme x ORDER BY x.id")
 	//Theme findAllOrderById();

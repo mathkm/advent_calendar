@@ -1,6 +1,6 @@
 package com.example.domain;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +29,7 @@ public class Theme {
 	@Column(nullable = false, name = "detail", length = 512, columnDefinition = "TEXT")
 	private String detail;
 	@Column(nullable = false, name = "calendar_month")
+	@Temporal(TemporalType.DATE)
 	private Date calendarMonth;
 	@Column(nullable = false, name = "enabled_dates", length = 512, columnDefinition = "TEXT")
 	private int[] enabledDates;
