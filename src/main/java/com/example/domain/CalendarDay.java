@@ -2,7 +2,9 @@ package com.example.domain;
 
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -19,56 +21,85 @@ import com.example.service.AdventCalendarService;
 import com.example.service.ArticleService;
 import com.example.service.ThemeService;
 
-@Component
-@Scope("prototype")
 public class CalendarDay{
-	//@Qualifier("com.example.service.ThemeService")
-	//@Autowired
-	private ThemeService themeService;
-	//@Qualifier("com.example.service.ArticleService")
-	//@Autowired
-	private ArticleService articleService;
 	
 	// カレンダーの年月日
-	public Date calendarMonth;
+	Date calendarMonth;
 	// articleの日付
 	Calendar calendarDate;	
+	// テーマリポジトリ
+	ThemeRepository themeRepository;
+	// アーティクルリポジトリ
+	ArticleRepository articleRepository;
+	// Theme型定義
 	Theme theme;
+	// DBからStringで取得したものをどうにかするんだよ？
+	String inlineStrEnabledDates;
+	String[] strEnabledDates;
 	int[] enabledDates;
-	java.util.Date articleDate;
-	String themeYearmonth;
-	String articleDay;
-	String articleYearmonth;
+	// 記事の日付
+	Date articleDate;
+	// sqlに送る用ふたつ
+	java.sql.Date sqlCalendarMonth;
+	java.sql.Date sqlArticleDate;
+	// 以下は比較と整形用
+	String strThemeYearMonth;
+	String strArticleDay;
+	String strArticleYearMonth;
+	int articleDay;
+	int articleYearMonth;
+	int themeYearMonth;
 	SimpleDateFormat dd;
 	SimpleDateFormat yyyymm;
 	
-	@Autowired
-	public CalendarDay(Date calendarMonth,Calendar calendarDate){
+	public CalendarDay(Date calendarMonth,Calendar calendarDate,
+			ThemeRepository themeRepository,ArticleRepository articleRepository){
 		this.calendarMonth = calendarMonth;
 		this.calendarDate = calendarDate;
-		getArticle(calendarDate);
-		isAvalable(calendarDate);
-		isEnabled(calendarMonth,calendarDate);
-		isRegistered(calendarDate);
-	}
-		
-	// Articleを取得
-	public Article getArticle(Calendar calendarDate) {
-		Article article = articleService.findByCalendarDate(calendarDate);
-		return article;
-	}
-
-	// テーマと同じ年・月であればtrue
-	public boolean isAvalable(Calendar calendarDate) {
-		articleDate = calendarDate.getTime();
+		this.themeRepository = themeRepository;
+		this.articleRepository = articleRepository;
 		// 有効日付と同じなのか確認するためのフォーマッター
 		dd = new SimpleDateFormat("dd");
 		// 同じ年月なのか確認するためyyyy-MMにするフォーマッター
 		yyyymm = new SimpleDateFormat("yyyyMM");
-		themeYearmonth = yyyymm.format(calendarMonth);
-		articleDay = dd.format(articleDate);
-		articleYearmonth = yyyymm.format(articleDate);
-		if (articleYearmonth == themeYearmonth) {
+		// 記事の日付をDate型で取り出す
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
+		cal.setTime(calendarMonth);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		sqlCalendarMonth = new java.sql.Date(cal.getTimeInMillis());
+    	articleDate = calendarDate.getTime();
+		cal.setTime(articleDate);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		sqlArticleDate = new java.sql.Date(cal.getTimeInMillis());
+		getArticle(sqlArticleDate,articleRepository);
+		isAvalable(sqlArticleDate,yyyymm);
+		isEnabled(sqlCalendarMonth,sqlArticleDate,themeRepository,dd);
+		isRegistered(sqlArticleDate,articleRepository);
+	}
+		
+	// Articleを取得
+	public Article getArticle(java.sql.Date sqlArticleDate,ArticleRepository articleRepository){
+		Article article = articleRepository.findByCalendarDate(sqlArticleDate);
+		if(article == null){
+			return null;
+		}else{
+			return article;
+		}
+	}
+
+	// テーマと同じ年・月であればtrue
+	public boolean isAvalable(java.sql.Date sqlArticleDate,SimpleDateFormat yyyymm) {
+		strThemeYearMonth = yyyymm.format(calendarMonth);
+		strArticleYearMonth = yyyymm.format(sqlArticleDate);
+		themeYearMonth = Integer.parseInt(strThemeYearMonth);
+		articleYearMonth = Integer.parseInt(strArticleYearMonth);
+		if (articleYearMonth == themeYearMonth) {
 			return true;
 		} else {
 			return false;
@@ -76,11 +107,25 @@ public class CalendarDay{
 	}
 
 	// テーマで許可されている日に存在していればtrue
-	public boolean isEnabled(Date calendarMonth,Calendar calendarDate) {
-		theme = themeService.findByCalendarMonth(calendarMonth);
-		enabledDates = theme.getEnabledDates();
-		articleDay = dd.format(articleDate);
-		if (Arrays.asList(enabledDates).contains(articleDay)) {
+	public boolean isEnabled(java.sql.Date sqlCalendarMonth,java.sql.Date sqlArticleDate,ThemeRepository themeRepository,SimpleDateFormat dd) {
+		theme = themeRepository.findByCalendarMonth(sqlCalendarMonth);
+		inlineStrEnabledDates = theme.getEnabledDates();
+		strEnabledDates = inlineStrEnabledDates.split(",");
+		strArticleDay = dd.format(sqlArticleDate);
+		articleDay = Integer.parseInt(strArticleDay);
+		enabledDates = new int[strEnabledDates.length];
+		
+		for (int i = 0; i < strEnabledDates.length; i++) {
+			try{
+		       enabledDates[i] = Integer.parseInt(strEnabledDates[i]);
+			}catch (NumberFormatException e) {
+		           e.printStackTrace(); // -5aのとき、スタックトレースが出力される
+		       }
+		    }
+		
+		List<int[]> list = Arrays.asList(enabledDates);
+		
+		if (list.contains(articleDay) == true) {
 			return true;
 		} else {
 			return false;
@@ -88,8 +133,8 @@ public class CalendarDay{
 	}
 
 	// articleに登録された日付であれば記事を取得できる。
-	public boolean isRegistered(Calendar calendarDate) {
-		if (getArticle(calendarDate) != null) {
+	public boolean isRegistered(java.sql.Date sqlArticleDate,ArticleRepository articleRepository) {
+		if (getArticle(sqlArticleDate,articleRepository) != null) {
 			return true;
 		} else {
 			return false;

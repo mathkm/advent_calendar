@@ -1,6 +1,7 @@
 package com.example.domain;
 
-import java.util.Calendar;
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -20,21 +21,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "articles")
-public class Article {
+public class Article implements Serializable{
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
-	@Column(nullable = false)
+	@Column(nullable = false, name = "id")
 	private Integer id;
 	@Column(nullable = false, name = "calendar_date")
-	private Calendar calendarDate;
+	private java.sql.Date calendarDate;
 	@Column(nullable = false, name = "user_id")
 	private Integer userid;
 	@Column(nullable = false, name = "title", length = 512, columnDefinition = "TEXT")
-	private String[] title;
+	private String title;
 	@Column(nullable = false, name = "url", length = 512, columnDefinition = "TEXT")
-	private String[] url;
+	private String url;
+	@Column(nullable = false, name = "created")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
+	@Column(nullable = false, name = "updated")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updated;
 }

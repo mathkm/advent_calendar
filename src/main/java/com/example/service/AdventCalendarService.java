@@ -17,13 +17,20 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.example.domain.Article;
 import com.example.domain.CalendarDay;
 import com.example.domain.Theme;
+import com.example.repository.ArticleRepository;
 import com.example.repository.ThemeRepository;
 
 @Service
 public class AdventCalendarService {
 
+	@Autowired
+	ThemeRepository themeRepository;
+	@Autowired
+	ArticleRepository articleRepository;
+	
 	public List<CalendarDay> generateCalendarDays() {
 
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
@@ -31,16 +38,10 @@ public class AdventCalendarService {
 		int month = cal.get(Calendar.MONTH);
     	cal.set(year,month,1,0,0,0);
     	Date calendarMonth = cal.getTime();
-		//cal.setTime(calendarMonth);
-		//cal.set(Calendar.HOUR_OF_DAY, 0);
-		//cal.set(Calendar.MINUTE, 0);
-		//cal.set(Calendar.SECOND, 0);
-		//cal.set(Calendar.MILLISECOND, 0);
-		//Date calendarMonth = new java.sql.Date(cal.getTimeInMillis());
     	
 		List<CalendarDay> list = new ArrayList<CalendarDay>();
 		
-		CalendarDay calendarDay = new CalendarDay(calendarMonth,cal);
+		CalendarDay calendarDay = new CalendarDay(calendarMonth,cal,themeRepository,articleRepository);
 		
 		int subDay = cal.get(Calendar.DAY_OF_WEEK) - 7;
         if (subDay < 0) {

@@ -1,6 +1,6 @@
 package com.example.repository;
 
-import java.util.Calendar;
+import java.sql.Date;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.example.domain.Article;
 
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
-	@Query("SELECT x FROM Article x WHERE calendarDate = :calendar_date")
-	Article findByCalendarDate(@Param("calendar_date") Calendar calendarDate);
+	@Query("SELECT x FROM Article x WHERE x.calendarDate = :sqlArticleDate")
+	Article findByCalendarDate(@Param("sqlArticleDate") Date sqlArticleDate);
 }

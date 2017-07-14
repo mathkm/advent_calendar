@@ -1,6 +1,7 @@
 package com.example.service;
 
 import java.util.Calendar;
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class ArticleService {
 		return articleRepository.findAll();
 	}
 	
-	public Article findByCalendarDate(Calendar calendarDate){
+	public Article findByCalendarDate(Date calendarDate){
 		return articleRepository.findByCalendarDate(calendarDate);
 	}
 }
