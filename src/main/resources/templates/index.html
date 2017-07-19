@@ -127,7 +127,21 @@ $(function(){
 </script>
 <title>アドベントカレンダー</title>
 </head>
+
 <body>
+<!--  現状だと、内容がnullのCalendarDayのgetArticle()を呼び出している状態になっている。 -->
+<!--  やっぱり、CalendarDayがDIの管理下にないことが問題な可能性もある。 -->
+<div th:object = "${calendar}" th:each="calendar : ${calendar}">
+	<div th:if = "${calendar.getArticle(Date,ArticleRepository)}">
+		<span th:text="${calendar}"></span>
+		<a th:href="${calendar.getArticle(Date,ArticleRepository).url}">
+		<span th:text="${calendar.getArticle(Date,ArticleRepository).title}"></span>
+		</a>
+	</div>
+	<div th:unless = "${calendar,getArticle(Date,ArticleRepository)}">
+		<span th:text="${calendar}"></span>
+	</div>
+</div>
 <table border="1">
 
 <tbody>
@@ -151,13 +165,12 @@ $(function(){
 </tr>
 <tr>
 	<th colspan="7" align="center">
-		←　＊＊＊＊年　＊月　→
+		←　<span th:text="${theme.calendarMonth}"></span>　→
 	</th>
 </tr>
 <tr>
 	<td colspan="7" align="center">
-	テーマ<br />
-	Javaについて
+	<span th:text="${theme.name}"></span>
 	</td>
 </tr>
 <tr>

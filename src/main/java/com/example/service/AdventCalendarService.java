@@ -31,16 +31,16 @@ public class AdventCalendarService {
 	@Autowired
 	ArticleRepository articleRepository;
 	
-	static Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
-		
+	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
+	int year = cal.get(Calendar.YEAR);
+	int month = cal.get(Calendar.MONTH);
+	
 	public List<CalendarDay> generateCalendarDays() {
 		
+		cal.set(year,month,1,0,0,0);
+		Date calendarMonth = cal.getTime();
+		
 		List<CalendarDay> list = new ArrayList<CalendarDay>();
-
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH);
-    	cal.set(year,month,1,0,0,0);
-	   	Date calendarMonth = cal.getTime();
 		
 	   	// カレンダーの一番左上までカレンダーを引き戻す
 	   	int firstweek = cal.get(Calendar.DAY_OF_WEEK);
@@ -142,12 +142,24 @@ public class AdventCalendarService {
 		
 	}
 	
-	// 変えれるか知らんけど書いとく
+	//themeとの連携用
+	public java.sql.Date getCalendarMonth(){
+		cal.set(year,month,1,0,0,0);
+		Date calendarMonth = cal.getTime();
+		cal.setTime(calendarMonth);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		java.sql.Date sqlCalendarMonth = new java.sql.Date(cal.getTimeInMillis());
+		return sqlCalendarMonth;
+	}
+	
+	// 次の月に行く処理を書く
 	public void addMonth(){
-		cal.add(Calendar.MONTH,+1);
 	}
 
+	// 前の月に行く処理を書く
 	public void minMonth(){
-		cal.add(Calendar.MONTH,-1);
 	}
 }

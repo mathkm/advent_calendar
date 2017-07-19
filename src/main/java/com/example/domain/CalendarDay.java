@@ -25,7 +25,9 @@ import com.example.service.ThemeService;
 //全体的に改善できそう。
 //コンストラクタの中に書かなくていいものとかたくさんあると思います。
 
-public class CalendarDay{
+@Scope("prototype")
+@Component
+public class CalendarDay {
 	
 	// カレンダーの年月日
 	Date calendarMonth;
@@ -95,14 +97,13 @@ public class CalendarDay{
 		Article article = articleRepository.findByCalendarDate(sqlArticleDate);
 		if(article == null){
 			return null;
-		}else{
-			return article;
 		}
+		return article;
 	}
 
 	// テーマと同じ年・月であればtrue
-	public boolean isAvalable(java.sql.Date sqlArticleDate,java.sql.Date sqlcalendarMonth,SimpleDateFormat yyyymm) {
-		strThemeYearMonth = yyyymm.format(sqlcalendarMonth);
+	public boolean isAvalable(java.sql.Date sqlArticleDate,java.sql.Date sqlCalendarMonth,SimpleDateFormat yyyymm) {
+		strThemeYearMonth = yyyymm.format(sqlCalendarMonth);
 		strArticleYearMonth = yyyymm.format(sqlArticleDate);
 		themeYearMonth = Integer.parseInt(strThemeYearMonth);
 		articleYearMonth = Integer.parseInt(strArticleYearMonth);
