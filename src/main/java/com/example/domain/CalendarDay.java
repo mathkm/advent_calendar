@@ -57,6 +57,13 @@ public class CalendarDay {
 	int themeYearMonth;
 	SimpleDateFormat dd;
 	SimpleDateFormat yyyymm;
+	// ひづけ
+	String strDay;
+	int day;
+	// ようび
+	int week;
+	// 日付の数カウンター
+	int count;
 	
 	//コンストラクタで値を初期化しまくる。
 	public CalendarDay(Date calendarMonth,Calendar calendarDate,
@@ -79,21 +86,25 @@ public class CalendarDay {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		sqlArticleDate = new java.sql.Date(cal.getTimeInMillis());
+		week = cal.get(Calendar.DAY_OF_WEEK);
 		cal.setTime(calendarMonth);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		sqlCalendarMonth = new java.sql.Date(cal.getTimeInMillis());
-		//各メソッドに値を渡していく感じで
-		getArticle(sqlArticleDate,articleRepository);
-		isAvalable(sqlArticleDate,sqlCalendarMonth,yyyymm);
-		isEnabled(sqlCalendarMonth,sqlArticleDate,themeRepository,dd);
-		isRegistered(sqlArticleDate,articleRepository);
+	}
+	
+	// 日付取得用
+	public int getDay(){
+		count++;
+		strDay = dd.format(articleDate);
+		day = Integer.parseInt(strDay);
+		return day;
 	}
 		
 	// Articleを取得
-	public Article getArticle(java.sql.Date sqlArticleDate,ArticleRepository articleRepository){
+	public Article getArticle(){
 		Article article = articleRepository.findByCalendarDate(sqlArticleDate);
 		if(article == null){
 			return null;
@@ -102,7 +113,7 @@ public class CalendarDay {
 	}
 
 	// テーマと同じ年・月であればtrue
-	public boolean isAvalable(java.sql.Date sqlArticleDate,java.sql.Date sqlCalendarMonth,SimpleDateFormat yyyymm) {
+	public boolean getIsAvalable() {
 		strThemeYearMonth = yyyymm.format(sqlCalendarMonth);
 		strArticleYearMonth = yyyymm.format(sqlArticleDate);
 		themeYearMonth = Integer.parseInt(strThemeYearMonth);
@@ -115,7 +126,7 @@ public class CalendarDay {
 	}
 
 	// テーマで許可されている日に存在していればtrue
-	public boolean isEnabled(java.sql.Date sqlCalendarMonth,java.sql.Date sqlArticleDate,ThemeRepository themeRepository,SimpleDateFormat dd) {
+	public boolean getIsEnabled() {
 		theme = themeRepository.findByCalendarMonth(sqlCalendarMonth);
 		if(theme == null){
 			return false;
@@ -152,10 +163,20 @@ public class CalendarDay {
 	}
 
 	// articleに登録された日付であれば記事を取得できる。
-	public boolean isRegistered(java.sql.Date sqlArticleDate,ArticleRepository articleRepository) {
-		if (getArticle(sqlArticleDate,articleRepository) != null) {
+	public boolean getIsRegistered() {
+		if (getArticle() != null) {
 			return true;
 		} else {
+			return false;
+		}
+	}
+	
+	// 土日判定する
+	public boolean getIsHoliday(){
+		if(week == 1 || week == 7
+				&& getIsAvalable() == true){
+			return true;
+		}else{
 			return false;
 		}
 	}

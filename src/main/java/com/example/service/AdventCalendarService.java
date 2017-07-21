@@ -23,6 +23,7 @@ import com.example.domain.Theme;
 import com.example.repository.ArticleRepository;
 import com.example.repository.ThemeRepository;
 
+@Scope("prototype")
 @Service
 public class AdventCalendarService {
 
@@ -68,6 +69,7 @@ public class AdventCalendarService {
         		
         			CalendarDay calendarDay = new CalendarDay(calendarMonth,cal,themeRepository,articleRepository);
         			list.add(calendarDay);
+        			
         			
         		}else{
         			
