@@ -21,10 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "themes")
-public class Theme implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
-	
+public class Theme implements Serializable {
 	@Id
 	@GeneratedValue
 	@Column(nullable = false)
@@ -42,7 +39,7 @@ public class Theme implements Serializable{
 	@Column(nullable = false, name = "created")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date created;
-	@Column(nullable = false, name = "updated_user_id")
+	@Column(nullable = true, name = "updated_user_id")
 	private Integer updatedUserid;
 	@Column(nullable = false, name = "updated")
 	@Temporal(TemporalType.TIMESTAMP)

@@ -2,228 +2,350 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" type="text/css" href="/css/style.css" />
 <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
-
 $(function(){
-
-	//モーダルウィンドウを出現させるクリックイベント
-	$("#modal-open").click( function(){
-
-		//キーボード操作などにより、オーバーレイが多重起動するのを防止する
-		$( this ).blur() ;	//ボタンからフォーカスを外す
-		if( $( "#modal-overlay" )[0] ) return false ;		//新しくモーダルウィンドウを起動しない (防止策1)
-		//if($("#modal-overlay")[0]) $("#modal-overlay").remove() ;		//現在のモーダルウィンドウを削除して新しく起動する (防止策2)
-
-		//オーバーレイを出現させる
-		$( "body" ).append( '<div id="modal-overlay"></div>' ) ;
-		$( "#modal-overlay" ).fadeIn( "slow" ) ;
-
-		//コンテンツをセンタリングする
-		centeringModalSyncer() ;
-
-		//コンテンツをフェードインする
-		$( "#modal-content" ).fadeIn( "slow" ) ;
-
-		//[#modal-overlay]、または[#modal-close]をクリックしたら…
-		$( "#modal-overlay,#modal-close" ).unbind().click( function(){
-
-			//[#modal-content]と[#modal-overlay]をフェードアウトした後に…
-			$( "#modal-content,#modal-overlay" ).fadeOut( "slow" , function(){
-
-				//[#modal-overlay]を削除する
-				$('#modal-overlay').remove() ;
-
-			} ) ;
-
-		} ) ;
-
-	} ) ;
-
-	//リサイズされたら、センタリングをする関数[centeringModalSyncer()]を実行する
-	$( window ).resize( centeringModalSyncer ) ;
-
-		//センタリングを実行する関数
-		function centeringModalSyncer() {
-
-			//画面(ウィンドウ)の幅、高さを取得
-			var w = $( window ).width() ;
-			var h = $( window ).height() ;
-
-			// コンテンツ(#modal-content)の幅、高さを取得
-			// jQueryのバージョンによっては、引数[{margin:true}]を指定した時、不具合を起こします。
-//			var cw = $( "#modal-content" ).outerWidth( {margin:true} );
-//			var ch = $( "#modal-content" ).outerHeight( {margin:true} );
-			var cw = $( "#modal-content" ).outerWidth();
-			var ch = $( "#modal-content" ).outerHeight();
-
-			//センタリングを実行する
-			$( "#modal-content" ).css( {"left": ((w - cw)/2) + "px","top": ((h - ch)/2) + "px"} ) ;
-
-		}
-
-	} ) ;
-	
-$(function(){
-
-	//モーダルウィンドウを出現させるクリックイベント
-	$("#modal-open2").click( function(){
-
-		//キーボード操作などにより、オーバーレイが多重起動するのを防止する
-		$( this ).blur() ;	//ボタンからフォーカスを外す
-		if( $( "#modal-overlay" )[0] ) return false ;		//新しくモーダルウィンドウを起動しない (防止策1)
-		//if($("#modal-overlay")[0]) $("#modal-overlay").remove() ;		//現在のモーダルウィンドウを削除して新しく起動する (防止策2)
-
-		//オーバーレイを出現させる
-		$( "body" ).append( '<div id="modal-overlay"></div>' ) ;
-		$( "#modal-overlay" ).fadeIn( "slow" ) ;
-
-		//コンテンツをセンタリングする
-		centeringModalSyncer() ;
-
-		//コンテンツをフェードインする
-		$( "#modal-content2" ).fadeIn( "slow" ) ;
-
-		//[#modal-overlay]、または[#modal-close]をクリックしたら…
-		$( "#modal-overlay,#modal-close" ).unbind().click( function(){
-
-			//[#modal-content]と[#modal-overlay]をフェードアウトした後に…
-			$( "#modal-content2,#modal-overlay" ).fadeOut( "slow" , function(){
-
-				//[#modal-overlay]を削除する
-				$('#modal-overlay').remove() ;
-
-			} ) ;
-
-		} ) ;
-
-	} ) ;
-
-	//リサイズされたら、センタリングをする関数[centeringModalSyncer()]を実行する
-	$( window ).resize( centeringModalSyncer ) ;
-
-		//センタリングを実行する関数
-		function centeringModalSyncer() {
-
-			//画面(ウィンドウ)の幅、高さを取得
-			var w = $( window ).width() ;
-			var h = $( window ).height() ;
-
-			// コンテンツ(#modal-content)の幅、高さを取得
-			// jQueryのバージョンによっては、引数[{margin:true}]を指定した時、不具合を起こします。
-//			var cw = $( "#modal-content2" ).outerWidth( {margin:true} );
-//			var ch = $( "#modal-content" ).outerHeight( {margin:true} );
-			var cw = $( "#modal-content2" ).outerWidth();
-			var ch = $( "#modal-content2" ).outerHeight();
-
-			//センタリングを実行する
-			$( "#modal-content2" ).css( {"left": ((w - cw)/2) + "px","top": ((h - ch)/2) + "px"} ) ;
-
-		}
-
-	} ) ;
+	$("#menubutton").click(function() {
+		  $("#usermenu").slideToggle();
+		});
+});
+</script>
+<script type="text/javascript">
+function getID(element) {
+	var date = element.id;
+	var fdate = date.replace(/-/g,'/');
+	var elem = document.getElementById('createDate');
+	elem.innerHTML = "<p>" + fdate + "</p>";
+	document.createArticle.calendarDate.value=date;
+	var form = document.forms.usrid;
+	var subid = form.subid.value;
+	document.createArticle.userid.value=subid;
+}
+function getEditID(element) {
+	var date = element.id;
+	var article = document.getElementsByClassName(date);
+	var url = article[0].getAttribute("href");
+	var title = article[1].innerHTML;
+	var fdate = date.replace(/-/g,'/');
+	var elem = document.getElementById('editDate');
+	elem.innerHTML = "<p>" + fdate + "</p>";
+	document.editArticle.calendarDate.value=date;
+	document.editArticle.url.value=url;
+	document.editArticle.title.value=title;
+	var form = document.forms.usrid;
+	var subid = form.subid.value;
+	document.editArticle.userid.value=subid;
+}
 
 </script>
 <title>アドベントカレンダー</title>
 </head>
 
 <body>
+
+<div th:object="${users}" th:each="users:${users}"  th:if="${username} == ${users.username}">
+
+	<form name="usrid">
+		<input type="hidden" name="subid" th:value="${users.id}" />	
+	</form>
+
+</div>
+
+<div class="body">
+
+	<div class="header">
 	
-	<div th:class="title"><!-- class作ってません -->
-		<h2>アドベントカレンダー</h2>
-	</div>
-	
-	<div th:class="status"><!-- class作ってません -->
-	
-		<a href="/loginForm" sec:authorize="isAnonymous()">ログイン</a><br sec:authorize="isAnonymous()" />
-		<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()"><input type="submit" class="btn btn-default btn-xs" value="ログアウト" /></form>
-		<img src="/icon/usericon.jpg" sec:authorize="isAuthenticated()" width="50px" height="50px" />
-		<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">duke　さん</span><br sec:authorize="isAuthenticated()" />
-		<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a><br />
-		<a href = "/themes" sec:authorize="hasRole('ROLE_ADMIN')">テーマ管理</a>
-	
-	</div>
-	
-	<div th:class="theme"><!-- class作ってません -->
-	
-		⇠　<span th:text="${#dates.format(theme.calendarMonth,'yyyy 年MM 月')}">カレンダーの月</span> ⇢
-		<span class="br">今月のテーマは</span><span th:text = "${theme.name}">テーマ</span>
+		<div class="tr">
 		
-	</div>
+				<div class="titlebox">
+						<h2>アドベントカレンダー</h2>
+				</div>
 	
-	<div th:class="week">日</div>
-	<div th:class="week">月</div>
-	<div th:class="week">火</div>
-	<div th:class="week">水</div>
-	<div th:class="week">木</div>
-	<div th:class="week">金</div>
-	<div th:class="week">土</div>
-	
-	<div th:object = "${calendar}" th:each="calendar , stat: ${calendar}" th:class="article">
-	
-		<!-- trueとfalseが逆判定になってる（謎）classappendの判定がよくわからないので要資料
-		modelだと判定は間違えてないです。 -->
-		<div class="day">
-			<!-- 有効日でかつ土日でなければ黒い日付を表示 -->
-			<span th:text="${calendar.day}" th:if="${calendar.isHoliday} == false and ${calendar.isAvalable}">日付</span>
-			<!-- 土日でかつ日曜日であれば赤、週の最後は土曜日なので青 -->
-			<span th:text="${calendar.day}" th:class="red" th:unless="${stat.count} == 1" th:if = "${calendar.isHoliday}" th:classappend = "${stat.count} % 7 == 0 ? 'blue'">日付</span>
-			<!-- 土日でも有効月でなければグレー。（必要な理由：最初の日はisHolidayで判断できていないため） -->
-			<span th:text="${calendar.day}" th:class="gray" th:if = "${stat.count} == 1">日付</span>
-			<!-- 有効月でなければグレー。 -->
-			<span th:text="${calendar.day}" th:class="gray" th:if = "${calendar.isAvalable} == false and ${calendar.isHoliday} == false">日付</span>
-		</div>
-		<span th:text="登録不可" th:if = "${calendar.isAvalable} and ${calendar.isEnabled} == false and ${calendar.isHoliday} == false">
-		登録不可
-		</span>
-		<span th:text="登録" th:if="${calendar.isEnabled} and ${calendar.isAvalable} and ${calendar.article} == null and ${calendar.isHoliday} == false">登録ボタン</span>
-		
-		<div th:if="${calendar.isRegistered} and ${calendar.isAvalable}">
+			<div class="stat">
 			
-			<span th:text="${calendar.article.id}">id</span>
-			<a th:href="${calendar.article.url}">
-			<span th:text="${calendar.article.title}">title</span>
-			</a>
+				<a href="/loginForm" sec:authorize="isAnonymous()">ログイン</a><br sec:authorize="isAnonymous()" />
+				<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">duke　さん</span><br sec:authorize="isAuthenticated()"  />
+				<img src="/icon/usericon.jpg" sec:authorize="isAuthenticated()" class="usericon" />
+				<div id="menubutton" sec:authorize="isAuthenticated()">▼</div>
+				
+				<div id="usermenu" sec:authorize="isAuthenticated()">
+					<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a>
+					<a href = "/theme" sec:authorize="hasRole('ROLE_ADMIN')" class="br">テーマ管理</a>
+					<a href = "/" sec:authorize="isAuthenticated()" class="br">トップ画面へ戻る</a><span class="br"></span>
+					<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()"><input type="submit" class="btn btn-default btn-xs" value="ログアウト" /></form>
+				</div>
+	
+			</div>
+	
+		</div>
+	
+	</div>
+	
+		<div id="theme" th:if="${theme} == null">
 		
+			<span>テーマが存在しません。<span th:text="${#dates.format(#dates.createNow(), 'yyyy年MM月dd日')}"></span>時点のカレンダーを表示しています。</span>
+		
+		</div>
+		
+		<div id="theme" th:if = "${theme} != null">
+		
+			<div class="tr">
+			
+				<div id="changemonth">
+			
+					<a href="backmonth" th:if="(__${isBack}__) == true">
+					<img src="icon/left.png" class="icon" /></a>
+					<img src="icon/space.png" th:if="(__${isBack}__) == false" class="icon" />
+					<span th:text="${#dates.format(theme.calendarMonth,'yyyy 年MM 月')}">カレンダーの月</span>
+					<a href="nextmonth" th:if="(__${isNext}__) == true">
+					<img src="icon/right.png" class="icon" /></a>
+					<img src="icon/space.png" th:if="(__${isNext}__) == false" class="icon" />
+			
+				</div>
+				
+			</div>
+			
+			<div class="tr">
+			
+				<div id="details">
+			
+					<span class="br">今月のテーマは<span th:text = "${theme.name}">テーマ</span></span>
+					<span class="br" th:text="${theme.detail}">ディテール</span>
+		
+				</div>
+				
+			</div>
+			
+		</div>
+	
+	<div class="table">
+		
+		<div class="tbody">
+		
+			<div class="tr">
+			
+				<div th:class="week"><span class="red">日</span></div>
+				<div class="week">月</div>
+				<div class="week">火</div>
+				<div class="week">水</div>
+				<div class="week">木</div>
+				<div class="week">金</div>
+				<div class="week"><span class="blue">土</span></div>
+				
+			</div>
+			
+			<div th:object = "${calendar}" th:each="week,stat: ${calendar}" class="tr">
+			
+				<div th:each="days,stat: ${week}" class="td">
+				
+					<div class="day">
+				
+						<!-- 土日でなく、今月である黒色の日付を表示 -->
+						<span th:text="${days.day}" th:if="${days.isHoliday} == false and ${days.isAvalable}">日付</span>
+						<!-- 土日でかつ日曜日であれば赤、週の最後は土曜日なので青 -->
+						<span th:text="${days.day}" th:class="red" th:if = "${days.isHoliday} and ${days.isAvalable}" th:classappend = "${stat.count} % 7 == 0 ? 'blue'">日付</span>
+						<!-- 有効月でなければグレー。 -->
+						<span th:text="${days.day}" th:class="gray" th:if = "${days.isAvalable} == false">日付</span>
+				
+					</div>
+					
+					<div th:if="${days.article} == null and ${days.isEnabled} and ${days.isAvalable} and ${days.isArrive} == false" class="articleButton">
+					
+							<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createArticle" onclick="getID(this);" th:id="${days.date}"
+							sec:authorize="isAuthenticated()">
+								記事登録
+							</button>
+						
+							<button type="button" class="btn btn-primary btn-1g" sec:authorize="isAnonymous()" onclick="location.href='/loginForm'">
+								記事登録
+							</button>
+						
+					</div>
+					
+					<div th:if="${days.isRegistered} and ${days.isAvalable} and ${days.isArrive} == true" class="article">
+					
+						<img src="icon/usericon.jpg" class="icon"/>
+						<span th:object="${users}" th:each="users:${users}">
+							<span th:if="${users.id} == ${days.article.userid}" th:text="${users.username}">username</span>
+						</span>
+						<span class="br"  th:if ="${days.article.userid} == ${loginid}">
+							<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" th:id="${days.date}"
+							sec:authorize="isAuthenticated()">
+								記事更新
+							</button>
+						</span>
+						<span class="br">
+						</span>
+						<a th:href="${days.article.url}" th:class="${days.date}" target="_blank">
+							<span th:text="${days.article.title}" th:class="${days.date}">title</span>
+						</a>
+						
+					</div>
+					
+					<div th:if="${days.isRegistered} and ${days.isAvalable} and ${days.isArrive} == false" class="article">
+
+						<img src="icon/usericon.jpg" class="icon"/>
+						<span th:object="${users}" th:each="users:${users}">
+							<span th:if="${users.id} == ${days.article.userid}" th:text="${users.username}">username</span>
+							</span>
+						<span class="br" th:if="${days.article.userid} == ${loginid}"></span>
+							<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" th:id="${days.date}"
+							th:if ="${days.article.userid} == ${loginid}" sec:authorize="isAuthenticated()">
+								記事更新
+							</button>
+						<span th:text="${days.article.title}" class="br">title</span>
+						<a th:href="${days.article.url}" th:class="${days.date}" target="_blank" style="display:none">
+							<span th:text="${days.article.title}" th:class="${days.date}">title</span>
+						</a>
+						<p class="br">
+							公開まで…<span th:text="${days.diff}">ひにち</span>日です。
+						</p>
+						
+						
+					</div>
+					
+				</div>
+				
+			</div>
+			
 		</div>
 		
 	</div>
 
-<!--  これでコードをかっこよくできねえかなリスト
-th:if = "${stat.count} % 7 == 0"　（繰り返し回数が7の倍数の要素のときにタグを出す）
-classappend = "${stat.count} % 7 == 0 ? 'class'"　（繰り返し回数が7倍数の要素のときクラスを"追加"する）
-attr = "要素"=変えたい内容
- -->
+<div class="modal fade" id="createArticle">
 
-<div id="modal-content">
-<p><a id="modal-close" class="button-link">閉じる</a></p>
-<form method="post" action="">
-<h2>記事登録</h2>
-登録日付<br />
-2017/05/31<br />
-<div>
-error!
-</div>
-タイトル：<input type="text" name="title" placeholder="タイトル" required="required" autofocus="autofocus" />
-URL：<input type="text" name="url" placeholder="URL" required="required" />
-<button class="btn btn-1g btn-primary btn-block" type="submit">投稿</button>
-</form>
+	<div class="modal-dialog">
+	
+		<div class="modal-content">
+		
+			<div class="text-right">
+			
+				<a href="#" class="btn btn-default" data-dismiss="modal">☓閉じる</a>
+			
+			</div>
+		
+			<div class="modal-header">
+			
+				<h2>記事登録</h2>
+			
+			</div>
+			
+			<div class="modal-body">
+				
+				<div>
+				
+					<img src="icon/usericon.jpg" class="usericon"/>
+					<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">username</span>
+				
+				</div>
+				
+				<div style="font-size:17px;">
+				
+				<p id="createDate"></p>
+				
+				</div>
+				
+				
+					<form name="createArticle" method="post" th:object="${articleForm}" th:action="@{/create}">
+						<input type="hidden" name="userid" th:field="*{userid}" value="" />
+						<input type="hidden" name="calendarDate" th:field="*{calendarDate}" placeholder="日付" value="" />
+						
+						<div class="form-group">
+							<label>タイトル</label>
+							<input type="text" name="title" th:field="*{title}" placeholder="タイトル" required="required" autofocus="autofocus" class="form-control" />
+						</div>
+						
+						<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="help-block">タイトルは3文字以上で入力してください。</span>
+						<span class="br"></span>
+						
+						<div class="form-group">
+							<label>URL</label>
+							<input type="url" name="url" th:field="*{url}" placeholder="URL" required="required" class="form-control" />
+						</div>
+						
+						<span class="br"></span>
+						<button class="btn btn-1g btn-primary btn-block" type="submit">投稿</button>
+					</form>
+					
+					
+			</div>
+					
+		</div>
+		
+	</div>
+	
 </div>
 
-<div id="modal-content2">
-<p><a id="modal-close" class="button-link">閉じる</a></p>
-<form method="post" action="">
-<h2>記事更新</h2>
-登録日付<br />
-2017/05/31<br />
-<div>
-error!
-</div>
-タイトル：<input type="text" name="title" placeholder="タイトル" required="required" autofocus="autofocus" />
-URL：<input type="text" name="url" placeholder="URL" required="required" />
-<button class="btn btn-1g btn-primary btn-block" type="submit">投稿</button>
-</form>
-</div>
+<div class="modal fade" id="editArticle">
+
+	<div class="modal-dialog">
+	
+		<div class="modal-content">
+		
+			<div class="text-right">
+			
+				<a href="#" class="btn btn-default " data-dismiss="modal">☓閉じる</a>
+			
+			</div>
+				
+			<div class="modal-header">
+			
+					<div class="titlebox">
+					
+						<h2>記事更新</h2>
+					
+					</div>
+				
+			</div>
+				
+			<div class="modal-body">
+				
+				<div>
+				
+					<img src="icon/usericon.jpg" class="usericon" />
+					<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">username</span>
+				
+				</div>
+				
+				<div style="font-size:17px;">
+				
+				<span id="editDate"></span>
+				
+				</div>
+				
+					<form name="editArticle" method="post" th:object="${articleForm}" th:action="@{/edit}">
+					
+						<input type="hidden" name="userid" th:field="*{userid}" value="" />
+						<input type="hidden" name="calendarDate" th:field="*{calendarDate}" placeholder="日付" value="" />
+						<div class="form-group">
+						<label>タイトル</label>
+						<input type="text" name="title" th:field="*{title}" placeholder="タイトル" required="required" autofocus="autofocus" class="form-control" />
+						</div>
+						<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="help-block">タイトルは3文字以上で入力してください。</span>
+						<span class="br"></span>
+						<div class="form-group">
+						<label>URL</label>
+						<input type="url" name="url" th:field="*{url}" placeholder="URL" required="required" class="form-control" />
+						</div>
+						<span class="br"></span>
+						<button class="btn btn-lg btn-primary" type="submit">更新</button>
+						<button class="btn btn-lg btn-danger" type="submit" th:formaction="@{/delete}">削除</button>
+						
+					</form>
+					
+				</div>
+						
+			</div>
+					
+		</div>
+		
+	</div>
+	
+</div><!-- このdivは触らない -->
 </body>
 </html>

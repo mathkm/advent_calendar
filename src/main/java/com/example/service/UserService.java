@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.domain.User;
+import com.example.pw.GenPassword;
 import com.example.repository.UserManageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class UserService {
 	}
 	
 	public User create(User user){
+		//入力されたパスワードをハッシュ化してから登録する。
+		String beforePw = user.getPassword();
+		GenPassword genPw = new GenPassword();
+		String afterpw = genPw.hashpw(beforePw);
+		user.setPassword(afterpw);
 		return userRepository.save(user);
 	}
 	

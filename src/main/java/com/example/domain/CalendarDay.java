@@ -28,11 +28,11 @@ import com.example.service.ThemeService;
 @Scope("prototype")
 @Component
 public class CalendarDay {
-	
+
 	// カレンダーの年月日
 	Date calendarMonth;
 	// articleの日付
-	Calendar calendarDate;	
+	Calendar calendarDate;
 	// テーマリポジトリ
 	ThemeRepository themeRepository;
 	// アーティクルリポジトリ
@@ -45,6 +45,7 @@ public class CalendarDay {
 	int[] enabledDates;
 	// 記事の日付
 	Date articleDate;
+	String strArticleDate;
 	// sqlに送る用ふたつ
 	java.sql.Date sqlCalendarMonth;
 	java.sql.Date sqlArticleDate;
@@ -57,6 +58,7 @@ public class CalendarDay {
 	int themeYearMonth;
 	SimpleDateFormat dd;
 	SimpleDateFormat yyyymm;
+	SimpleDateFormat yyyyMMdd;
 	// ひづけ
 	String strDay;
 	int day;
@@ -64,10 +66,10 @@ public class CalendarDay {
 	int week;
 	// 日付の数カウンター
 	int count;
-	
-	//コンストラクタで値を初期化しまくる。
-	public CalendarDay(Date calendarMonth,Calendar calendarDate,
-			ThemeRepository themeRepository,ArticleRepository articleRepository){
+
+	// コンストラクタで値を初期化しまくる。
+	public CalendarDay(Date calendarMonth, Calendar calendarDate, ThemeRepository themeRepository,
+			ArticleRepository articleRepository) {
 		this.calendarMonth = calendarMonth;
 		this.calendarDate = calendarDate;
 		this.themeRepository = themeRepository;
@@ -77,9 +79,9 @@ public class CalendarDay {
 		// 同じ年月なのか確認するためyyyy-MMにするフォーマッター
 		yyyymm = new SimpleDateFormat("yyyyMM");
 		// 記事の日付をDate型で取り出す
-    	articleDate = calendarDate.getTime();
-    	//SQLに送る用の形にカレンダーの月と記事の日付を変換する。
-    	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
+		articleDate = calendarDate.getTime();
+		// SQLに送る用の形にカレンダーの月と記事の日付を変換する。
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
 		cal.setTime(articleDate);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
@@ -94,19 +96,53 @@ public class CalendarDay {
 		cal.set(Calendar.MILLISECOND, 0);
 		sqlCalendarMonth = new java.sql.Date(cal.getTimeInMillis());
 	}
-	
+
 	// 日付取得用
-	public int getDay(){
+	public int getDay() {
 		count++;
 		strDay = dd.format(articleDate);
 		day = Integer.parseInt(strDay);
 		return day;
 	}
-		
+
+	public String getDate() {
+
+		SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+		strArticleDate = yyyyMMdd.format(articleDate);
+		return strArticleDate;
+
+	}
+
+	public boolean getIsArrive() {
+		Calendar cal = Calendar.getInstance();
+		Date nowDate = cal.getTime();
+		int diff = articleDate.compareTo(nowDate);
+		if (diff == 0) {
+			// 記事の日付と今が同じ
+			return true;
+		} else if (diff > 0) {
+			// 記事の日付はまだ未来
+			return false;
+		} else {
+			// 記事の日付は過去の話だ
+			return true;
+		}
+	}
+
+	public int getDiff() {
+		Calendar cal = Calendar.getInstance();
+		Date nowDate = cal.getTime();
+		long now = nowDate.getTime();
+		long future = articleDate.getTime();
+		long one_date_time = 1000 * 60 * 60 * 24;
+		long diffDays = (future - now) / one_date_time;
+		return (int) diffDays + 1;
+	}
+
 	// Articleを取得
-	public Article getArticle(){
+	public Article getArticle() {
 		Article article = articleRepository.findByCalendarDate(sqlArticleDate);
-		if(article == null){
+		if (article == null) {
 			return null;
 		}
 		return article;
@@ -128,31 +164,31 @@ public class CalendarDay {
 	// テーマで許可されている日に存在していればtrue
 	public boolean getIsEnabled() {
 		theme = themeRepository.findByCalendarMonth(sqlCalendarMonth);
-		if(theme == null){
+		if (theme == null) {
 			return false;
 		}
 		inlineStrEnabledDates = theme.getEnabledDates();
-		//[1,2,3]みたいな形で取れるようになっているので、カンマで区切って配列に変える。
+		// [1,2,3]みたいな形で取れるようになっているので、カンマで区切って配列に変える。
 		strEnabledDates = inlineStrEnabledDates.split(",");
 		strArticleDay = dd.format(sqlArticleDate);
 		articleDay = Integer.parseInt(strArticleDay);
 		enabledDates = new int[strEnabledDates.length];
-		
-		//現在Stringの配列なのでint[]に変換
+
+		// 現在Stringの配列なのでint[]に変換
 		for (int i = 0; i < strEnabledDates.length; i++) {
-			try{
-		       enabledDates[i] = Integer.parseInt(strEnabledDates[i]);
-			}catch (NumberFormatException e) {
-		           e.printStackTrace();
-		       }
-		    }
-		
-		//int型の値検索をするためにInteger型のListに変換する
+			try {
+				enabledDates[i] = Integer.parseInt(strEnabledDates[i]);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// int型の値検索をするためにInteger型のListに変換する
 		List<Integer> list = new ArrayList<Integer>(enabledDates.length);
 		for (int i = 0; i < enabledDates.length; i++) {
-		    list.add(enabledDates[i]);
+			list.add(enabledDates[i]);
 		}
-		
+
 		// なぜなら、Arrays.asListはオブジェクト型じゃないとリスト化してくれないため。
 		// listの中身とcontainsで調べる値の型は同じでないとfalseになる。
 		if (list.contains(articleDay) == true) {
@@ -170,14 +206,14 @@ public class CalendarDay {
 			return false;
 		}
 	}
-	
+
 	// 土日判定する
-	public boolean getIsHoliday(){
-		if(week == 1 || week == 7
-				&& getIsAvalable() == true){
+	public boolean getIsHoliday() {
+		if (week == 1 || week == 7) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
+
 }

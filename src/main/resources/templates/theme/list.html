@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+$(function(){
+	$("#menubutton").click(function() {
+		  $("#usermenu").slideToggle();
+		});
+});
+</script>
+<title>アドベントカレンダー</title>
+</head>
+<body>
+
+<div class="adminbody">
+
+	<div class="adminheader">
+	
+		<div class="tr">
+		
+				<div class="titlebox">
+						<h2>アドベントカレンダー</h2>
+				</div>
+	
+			<div class="stat">
+			
+				<a href="/loginForm" sec:authorize="isAnonymous()">ログイン</a><br sec:authorize="isAnonymous()" />
+				<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">duke　さん</span><br sec:authorize="isAuthenticated()"  />
+				<img src="/icon/usericon.jpg" sec:authorize="isAuthenticated()" class="usericon" />
+				<div id="menubutton" sec:authorize="isAuthenticated()">▼</div>
+				
+				<div id="usermenu" sec:authorize="isAuthenticated()">
+					<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a>
+					<a href = "/theme" sec:authorize="hasRole('ROLE_ADMIN')" class="br">テーマ管理</a>
+					<a href = "/" sec:authorize="isAuthenticated()" class="br">トップ画面へ戻る</a><span class="br"></span>
+					<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()"><input type="submit" class="btn btn-default btn-xs" value="ログアウト" /></form>
+				</div>
+	
+			</div>
+	
+		</div>
+	
+	</div>
+	
+	<div class="table" style="width:80%;margin-left:auto;margin-right:auto;">
+	
+		<div class="tr">
+		
+			<div class="title">
+			
+			<h3>カレンダー一覧</h3>
+			
+			</div>
+			
+			<div class="stat" style="padding-top:20px;">
+			
+			<input type="button" onclick="location.href='/theme/create'" value="テーマの追加" class="btn-lg" />
+			
+			</div>
+			
+		</div>
+		
+	</div>
+
+	<div class="admintable">
+		
+		<div class="tr">
+		
+			<div class="subtitle">
+			
+				カレンダー
+			
+			</div>
+			
+			<div class="subtitle">
+			
+				テーマ
+			
+			</div>
+		
+		</div>
+		
+	</div>
+	
+	<div class="admintable">
+		
+		<div th:each="theme:${theme}" class="tr">
+			
+			<form th:action="@{/theme/edit}" method="get">
+				<input type="hidden" name="id" th:value="${theme.id}" />
+				<button class="listbutton" type="submit" name="form" value="edit">
+				<div th:text="${#dates.format(theme.calendarMonth,'yyyy/MM/dd')}" class="adminlists"></div>
+				<div th:text="${theme.name}" class="adminlist"></div>
+				</button>
+			</form>
+		
+		</div>
+
+	</div>
+	
+</div>
+</body>
+</html>
