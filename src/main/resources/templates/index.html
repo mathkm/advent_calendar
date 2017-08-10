@@ -3,19 +3,106 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 <link rel="stylesheet" type="text/css" href="/css/style.css" />
 <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery.validate.min.js"></script>
 
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
 $(function(){
+	$("button").click(function(){
+	var ArticleID = $(this).parent("div").attr("id");
+	console.log(ArticleID);
+	$("#articleSubmit").attr({"data-change":ArticleID});
+	$("#editSubmit").attr({"data-change":ArticleID});
+	});
+});
+
+$(function(){
 	$("#menubutton").click(function() {
 		  $("#usermenu").slideToggle();
 		});
 });
-</script>
-<script type="text/javascript">
+
+function submit(){
+		$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+          	var token = $("meta[name='_csrf']").attr("content");
+          	var header = $("meta[name='_csrf_header']").attr("content");
+          	jqXHR.setRequestHeader(header, token);
+		});
+        var jsonString = $('form[name=createArticle]').serializeArray();
+	  	var formData = JSON.stringify(jsonString);
+		$.ajax({
+			type: 'POST',
+			url: '/createAjax',
+			data: JSON.stringify(jsonString),
+			contentType: 'application/json',
+			datatype: 'json',
+			scriptCharset: 'utf-8'
+		}).done(function(data){
+			var change = $("#articleSubmit").attr("data-change");
+			var username = $("#loggedInUser").text();
+			var hiduke = $("#"+change).find("button").attr("id");
+			console.log(change);
+			console.log(hiduke);
+			$("#"+change).removeClass("articleButton").addClass("article");
+			$("#"+change).html('<img src="icon/usericon.jpg" class="icon"/>' +username+ '<span class="br"></span><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" id="">記事更新</button><span class="br"></span><a href="" style="display:none" id="ajaxUrl" class="">test</a><span id="ajaxTitle" class="">' + data.title + '</span>');
+			$("#ajaxUrl").attr("href",data.url);
+			$("#"+change).children("button").attr("id",hiduke);
+			$("#"+change).children("#ajaxTitle").attr("class",hiduke);
+			$("#"+change).children("#ajaxUrl").attr("class",hiduke);
+			$('body').removeClass('modal-open');
+			$('.modal-backdrop').remove();
+			$('#createArticle').modal('hide');
+		}).fail(function(data){
+			$("#createDate").append('<p class="red">通信エラーが発生しました。しばらくしてから再度お試しください。</p>')
+		});
+	}
+	
+function edit(){
+	$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+      	var token = $("meta[name='_csrf']").attr("content");
+      	var header = $("meta[name='_csrf_header']").attr("content");
+      	jqXHR.setRequestHeader(header, token);
+	});
+    var jsonString = $('form[name=editArticle]').serializeArray();
+  	var formData = JSON.stringify(jsonString);
+	$.ajax({
+		type: 'POST',
+		url: '/editAjax',
+		data: JSON.stringify(jsonString),
+		contentType: 'application/json',
+		datatype: 'json',
+		scriptCharset: 'utf-8'
+	}).done(function(data){
+		var change = $("#editSubmit").attr("data-change");
+		var username = $("#loggedInUser").text();
+		var hiduke = $("#"+change).find("button").attr("id");
+		console.log(change);
+		console.log(hiduke);
+		$("#"+change).html('<img src="icon/usericon.jpg" class="icon"/>' +username+ '<span class="br"></span><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" id="">記事更新</button><span class="br"></span><a href="" style="display:none" id="ajaxUrl" class="">test</a><span id="ajaxTitle" class="">' + data.title + '</span>');
+		$("#ajaxUrl").attr("href",data.url);
+		$("#"+change).children("button").attr("id",hiduke);
+		$("#"+change).children("#ajaxTitle").attr("class",hiduke);
+		$("#"+change).children("#ajaxUrl").attr("class",hiduke);
+		$('body').removeClass('modal-open');
+		$('.modal-backdrop').remove();
+		$('#editArticle').modal('hide');
+
+	}).fail(function(data){
+		$("#editDate").append('<p class="red">通信エラーが発生しました。しばらくしてから再度お試しください。</p>')
+	});
+}
+
+function getArticleDay(element){
+	var day = element.id;
+	var el = document.getElementById('articleSubmit');
+	el.setAttribute("name",day);
+}
+	
 function getID(element) {
 	var date = element.id;
 	var fdate = date.replace(/-/g,'/');
@@ -26,6 +113,7 @@ function getID(element) {
 	var subid = form.subid.value;
 	document.createArticle.userid.value=subid;
 }
+
 function getEditID(element) {
 	var date = element.id;
 	var article = document.getElementsByClassName(date);
@@ -41,6 +129,27 @@ function getEditID(element) {
 	var subid = form.subid.value;
 	document.editArticle.userid.value=subid;
 }
+$(function(){
+	$("form").validate({
+		rules: {
+			title :{
+				required: true
+			},
+			url :{
+				required: true
+			}
+		},
+		messages: {
+			name :{
+				required: "お名前を入力してください"
+			},
+			url :{
+				required: "URLを入力してください"
+			}
+		}
+	});
+})
+
 
 </script>
 <title>アドベントカレンダー</title>
@@ -69,7 +178,7 @@ function getEditID(element) {
 			<div class="stat">
 			
 				<a href="/loginForm" sec:authorize="isAnonymous()">ログイン</a><br sec:authorize="isAnonymous()" />
-				<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">duke　さん</span><br sec:authorize="isAuthenticated()"  />
+				<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()" id="loggedInUser">duke　さん</span><br sec:authorize="isAuthenticated()"  />
 				<img src="/icon/usericon.jpg" sec:authorize="isAuthenticated()" class="usericon" />
 				<div id="menubutton" sec:authorize="isAuthenticated()">▼</div>
 				
@@ -154,12 +263,14 @@ function getEditID(element) {
 				
 					</div>
 					
-					<div th:if="${days.article} == null and ${days.isEnabled} and ${days.isAvalable} and ${days.isArrive} == false" class="articleButton">
-					
-							<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createArticle" onclick="getID(this);" th:id="${days.date}"
+					<div th:if="${days.article} == null and ${days.isEnabled} and ${days.isAvalable} and ${days.isArrive} == false" class="articleButton" th:id="${days.day}">
+						
+							<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createArticle" onclick="getID(this)" th:id="${days.date}"
 							sec:authorize="isAuthenticated()">
 								記事登録
 							</button>
+						
+						
 						
 							<button type="button" class="btn btn-primary btn-1g" sec:authorize="isAnonymous()" onclick="location.href='/loginForm'">
 								記事登録
@@ -167,7 +278,7 @@ function getEditID(element) {
 						
 					</div>
 					
-					<div th:if="${days.isRegistered} and ${days.isAvalable} and ${days.isArrive} == true" class="article">
+					<div th:if="${days.isRegistered} and ${days.isAvalable} and ${days.isArrive} == true" class="article" th:id="${days.day}">
 					
 						<img src="icon/usericon.jpg" class="icon"/>
 						<span th:object="${users}" th:each="users:${users}">
@@ -187,7 +298,7 @@ function getEditID(element) {
 						
 					</div>
 					
-					<div th:if="${days.isRegistered} and ${days.isAvalable} and ${days.isArrive} == false" class="article">
+					<div th:if="${days.isRegistered} and ${days.isAvalable} and ${days.isArrive} == false" class="article" th:id="${days.day}">
 
 						<img src="icon/usericon.jpg" class="icon"/>
 						<span th:object="${users}" th:each="users:${users}">
@@ -270,7 +381,10 @@ function getEditID(element) {
 						
 						<span class="br"></span>
 						<button class="btn btn-1g btn-primary btn-block" type="submit">投稿</button>
+						
 					</form>
+						
+						<button class="btn btn-lg btn-block" id="articleSubmit" name="" onClick="submit();" data-change="">Ajax版投稿</button>
 					
 					
 			</div>
@@ -337,6 +451,7 @@ function getEditID(element) {
 						<button class="btn btn-lg btn-danger" type="submit" th:formaction="@{/delete}">削除</button>
 						
 					</form>
+					<button class="btn btn-lg btn-block" id="editSubmit" onClick="edit();" data-change="">Ajax版更新</button>
 					
 				</div>
 						

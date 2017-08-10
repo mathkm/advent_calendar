@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.example.domain.AdventCalendar;
 import com.example.domain.Article;
 import com.example.domain.CalendarDay;
 import com.example.domain.Theme;
@@ -36,6 +37,8 @@ public class AdventCalendarService {
 	ArticleRepository articleRepository;
 	@Autowired
 	Formatter format;
+	@Autowired
+	AdventCalendar adventCalendar;
 
 	// static Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
 	// static int year = cal.get(Calendar.YEAR);
@@ -44,52 +47,56 @@ public class AdventCalendarService {
 
 	public List<CalendarDay[]> generateCalendarDays(Date calendarMonth) {
 
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
-		int year = format.parseDateToYear(calendarMonth);
-		int month = format.parseDateToMonth(calendarMonth);
-		cal.set(year, month, 1, 0, 0, 0);
+		// もし渡された月のテーマがなかった場合
 
-		// もし今月のテーマがなかった場合...
-		java.sql.Date ifMonth = getCalendarMonth();
-		Theme ifTheme = themeRepository.findByCalendarMonth(ifMonth);
-		List<Theme> nextThemelist = themeRepository.findByNextCalendarMonth(ifMonth);
-		List<Theme> backThemelist = themeRepository.findByBackCalendarMonth(ifMonth);
+		java.sql.Date sqlCalendarMonth = format.parseSql(calendarMonth);
+		Theme ifTheme = themeRepository.findByCalendarMonth(sqlCalendarMonth);
+		List<Theme> nextThemelist = themeRepository.findByNextCalendarMonth(sqlCalendarMonth);
+		List<Theme> backThemelist = themeRepository.findByBackCalendarMonth(sqlCalendarMonth);
 
-		if (nextThemelist.isEmpty() || backThemelist.isEmpty()) {
+		if (ifTheme == null) {
 
-			// themelistがemptyならば何もしない。
+			if (nextThemelist.isEmpty() || backThemelist.isEmpty()) {
 
-		} else {
+				// themelistがemptyならばcalendarMonthはそのまま
 
-			Theme nextTheme = nextThemelist.get(0);
-			Theme backTheme = backThemelist.get(0);
-			Date nextMonth = nextTheme.getCalendarMonth();
-			Date backMonth = backTheme.getCalendarMonth();
-			long nextTime = nextMonth.getTime();
-			long backTime = backMonth.getTime();
-			long nowTime = calendarMonth.getTime();
-			long nextDiff = nextTime - nowTime;
-			long backDiff = nowTime - backTime;
+			} else {
 
-			if (ifTheme == null) {
+				Theme nextTheme = nextThemelist.get(0);
+				Theme backTheme = backThemelist.get(0);
+				java.util.Date nextMonth = nextTheme.getCalendarMonth();
+				java.util.Date backMonth = backTheme.getCalendarMonth();
+				long nextTime = nextMonth.getTime();
+				long backTime = backMonth.getTime();
+				long nowTime = calendarMonth.getTime();
+				long nextDiff = nextTime - nowTime;
+				long backDiff = nowTime - backTime;
 
 				if (nextDiff > backDiff) {
 
-					return minMonth();
+					calendarMonth = minMonth(calendarMonth);
+					adventCalendar.setCalendarMonth(calendarMonth);
 
 				} else if (nextDiff < backDiff) {
 
-					return addMonth();
+					calendarMonth = addMonth(calendarMonth);
+					adventCalendar.setCalendarMonth(calendarMonth);
 
 				} else if (nextDiff == backDiff) {
 
-					return addMonth();
+					calendarMonth = addMonth(calendarMonth);
+					adventCalendar.setCalendarMonth(calendarMonth);
 
 				}
 
 			}
 
 		}
+
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
+		int year = format.parseDateToYear(calendarMonth);
+		int month = format.parseDateToMonth(calendarMonth);
+		cal.set(year, month - 1, 1, 0, 0, 0);
 
 		List<CalendarDay[]> list = new ArrayList<CalendarDay[]>();
 
@@ -312,78 +319,69 @@ public class AdventCalendarService {
 
 	// themeとの連携用
 	public java.sql.Date getCalendarMonth() {
-		cal.set(year, month, 1, 0, 0, 0);
-		Date calendarMonth = cal.getTime();
-		cal.setTime(calendarMonth);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		java.sql.Date sqlCalendarMonth = new java.sql.Date(cal.getTimeInMillis());
+		/*
+		 * cal.set(year, month, 1, 0, 0, 0); Date calendarMonth = cal.getTime();
+		 * cal.setTime(calendarMonth); cal.set(Calendar.HOUR_OF_DAY, 0);
+		 * cal.set(Calendar.MINUTE, 0); cal.set(Calendar.SECOND, 0);
+		 * cal.set(Calendar.MILLISECOND, 0); java.sql.Date sqlCalendarMonth =
+		 * new java.sql.Date(cal.getTimeInMillis()); return sqlCalendarMonth;
+		 */
+		java.util.Date calendarMonth = adventCalendar.getCalendarMonth();
+		java.sql.Date sqlCalendarMonth = format.parseSql(calendarMonth);
 		return sqlCalendarMonth;
 	}
 
-	// 次の月に行く処理を書く
+	// 次の月を確認して返す
 	public Date addMonth(Date calendarMonth) {
-		Calendar cal = format.getSettedCalendar(calendarMonth);
 		java.sql.Date sqlCalendarMonth = format.parseSql(calendarMonth);
 		List<Theme> theme = themeRepository.findByNextCalendarMonth(sqlCalendarMonth);
 		if (theme.isEmpty()) {
 			return calendarMonth;
 		} else {
 			Theme nexttheme = theme.get(0);
-			java.util.Date nextCalMonth = nexttheme.getCalendarMonth();
-			int calMM = format.parseDateToMonth(calendarMonth);
-			int nextMM = format.parseDateToMonth(nextCalMonth);
-			int i = 0;
-
-			if (nextMM < calMM) {
-				i = (12 - calMM) + nextMM;
-			} else if (nextMM == calMM) {
-				i = 12;
-			} else {
-				i = nextMM - calMM;
-			}
-			cal.add(Calendar.MONTH, i);
-			java.sql.Date afterCalendarMonth = getCalendarMonth();
-			Theme aftertheme = themeRepository.findByCalendarMonth(afterCalendarMonth);
-			while (aftertheme == null) {
-				month = month - 12;
-			}
-			List<CalendarDay[]> gencaldays = generateCalendarDays();
-			return gencaldays;
+			calendarMonth = nexttheme.getCalendarMonth();
+			adventCalendar.setCalendarMonth(calendarMonth);
+			return calendarMonth;
 		}
+		/*
+		 * int calMM = format.parseDateToMonth(calendarMonth); int nextMM =
+		 * format.parseDateToMonth(nextCalMonth); int i = 0;
+		 * 
+		 * if (nextMM < calMM) { i = (12 - calMM) + nextMM; } else if (nextMM ==
+		 * calMM) { i = 12; } else { i = nextMM - calMM; }
+		 * cal.add(Calendar.MONTH, i); java.util.Date afterMonth =
+		 * cal.getTime(); java.sql.Date afterCalendarMonth =
+		 * format.parseSql(afterMonth); Theme aftertheme =
+		 * themeRepository.findByCalendarMonth(afterCalendarMonth); while
+		 * (aftertheme == null) { month = month - 12; } List<CalendarDay[]>
+		 * gencaldays = generateCalendarDays(); return gencaldays;
+		 */
 	}
 
-	// 前の月に行く処理を書く
+	// 前の月を確認して返す
 	public java.util.Date minMonth(Date calendarMonth) {
-		java.sql.Date calendarMonth = getCalendarMonth();
-		List<Theme> theme = themeRepository.findByBackCalendarMonth(calendarMonth);
+		java.sql.Date sqlCalendarMonth = format.parseSql(calendarMonth);
+		List<Theme> theme = themeRepository.findByBackCalendarMonth(sqlCalendarMonth);
 		if (theme.isEmpty()) {
-			return generateCalendarDays();
+			return calendarMonth;
 		} else {
 			Theme backtheme = theme.get(0);
-			java.sql.Date backcalmonth = backtheme.getCalendarMonth();
-			String strCalendarMonth = mm.format(calendarMonth);
-			String strNextCalMonth = mm.format(backcalmonth);
-			int calMM = Integer.parseInt(strCalendarMonth);
-			int backMM = Integer.parseInt(strNextCalMonth);
-			int i = 0;
-			if (calMM < backMM) {
-				i = calMM + (12 - backMM);
-			} else if (calMM == backMM) {
-				i = 12;
-			} else {
-				i = calMM - backMM;
-			}
-			month = month - i;
-			java.sql.Date afterCalendarMonth = getCalendarMonth();
-			Theme aftertheme = themeRepository.findByCalendarMonth(afterCalendarMonth);
-			while (aftertheme == null) {
-				month = month - 12;
-			}
-			List<CalendarDay[]> gencaldays = generateCalendarDays();
-			return gencaldays;
+			calendarMonth = backtheme.getCalendarMonth();
+			adventCalendar.setCalendarMonth(calendarMonth);
+			return calendarMonth;
+			/*
+			 * String strCalendarMonth = mm.format(calendarMonth); String
+			 * strNextCalMonth = mm.format(backcalmonth); int calMM =
+			 * Integer.parseInt(strCalendarMonth); int backMM =
+			 * Integer.parseInt(strNextCalMonth); int i = 0; if (calMM < backMM)
+			 * { i = calMM + (12 - backMM); } else if (calMM == backMM) { i =
+			 * 12; } else { i = calMM - backMM; } month = month - i;
+			 * java.sql.Date afterCalendarMonth = getCalendarMonth(); Theme
+			 * aftertheme =
+			 * themeRepository.findByCalendarMonth(afterCalendarMonth); while
+			 * (aftertheme == null) { month = month - 12; } List<CalendarDay[]>
+			 * gencaldays = generateCalendarDays(); return gencaldays;
+			 */
 		}
 	}
 }
