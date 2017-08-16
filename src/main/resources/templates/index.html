@@ -91,7 +91,6 @@ function edit(){
 		$('body').removeClass('modal-open');
 		$('.modal-backdrop').remove();
 		$('#editArticle').modal('hide');
-
 	}).fail(function(data){
 		$("#editDate").append('<p class="red">通信エラーが発生しました。しばらくしてから再度お試しください。</p>')
 	});
@@ -129,27 +128,6 @@ function getEditID(element) {
 	var subid = form.subid.value;
 	document.editArticle.userid.value=subid;
 }
-$(function(){
-	$("form").validate({
-		rules: {
-			title :{
-				required: true
-			},
-			url :{
-				required: true
-			}
-		},
-		messages: {
-			name :{
-				required: "お名前を入力してください"
-			},
-			url :{
-				required: "URLを入力してください"
-			}
-		}
-	});
-})
-
 
 </script>
 <title>アドベントカレンダー</title>
