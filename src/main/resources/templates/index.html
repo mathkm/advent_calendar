@@ -13,21 +13,66 @@
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
 $(function(){
-	$("button").click(function(){
-	var ArticleID = $(this).parent("div").attr("id");
-	console.log(ArticleID);
-	$("#articleSubmit").attr({"data-change":ArticleID});
-	$("#editSubmit").attr({"data-change":ArticleID});
-	});
-});
-
-$(function(){
 	$("#menubutton").click(function() {
 		  $("#usermenu").slideToggle();
 		});
+	
+    $(document).on("click","button",function(){
+		var ArticleID = $(this).parent("div").attr("id");
+		console.log(ArticleID);
+		$("#articleSubmit").attr({"data-change":ArticleID});
+		$("#editSubmit").attr({"data-change":ArticleID});
+		$("#deleteSubmit").attr({"data-change":ArticleID});
+		});
+    
+    var flag = false;
+    var flag2 = false;
+  
+    $("input[name='url']").blur(function(){
+		if ($(this).val() != "" && $(this).val() != "http://" && $(this).val() != "https://"){
+			if ($(this).val().slice(0, 7) == "http://" || $(this).val().slice(0, 8) == "https://") {
+				var checkDot = $(this).val().split(".");
+				if (1 < checkDot.length) {
+					$('.url').html('OK');
+					flag = true;
+				}else{
+					$('.url').html('URLの形式でご記入ください。');
+					flag = false;
+				}
+    		}else{
+    			$('.url').html('http://またはhttps://から書いてください。');
+    			flag = false;
+    		}
+		}else{
+			$('.url').html('空欄または、http://・https://だけでは投稿できません。');
+			flag = false;
+		}
+	});
+    
+    $("input[name='title']").blur(function(){
+	  	if($(this).val() == ""){
+	   		$('.title').html('空やで');
+	   		flag2 = false;
+	    	}else{
+	    	$('.title').html('OK');
+	    	flag2 = true;
+	    }
+    });
+    
+    $("input[name='url'],input[name='title']").keyup(function(){
+		console.log(flag);
+		console.log(flag2);
+    	if(flag == true && flag2 == true){
+    		$("#articleSubmit,#editSubmit").prop('disabled', false);
+    		console.log(flag);
+    		console.log(flag2);
+    	} else {
+    		$("#articleSubmit,#editSubmit").prop('disabled', true);
+    	}
+    })
 });
-
-function submit(){
+	
+function articleCreate(){
 		$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
           	var token = $("meta[name='_csrf']").attr("content");
           	var header = $("meta[name='_csrf_header']").attr("content");
@@ -49,7 +94,7 @@ function submit(){
 			console.log(change);
 			console.log(hiduke);
 			$("#"+change).removeClass("articleButton").addClass("article");
-			$("#"+change).html('<img src="icon/usericon.jpg" class="icon"/>' +username+ '<span class="br"></span><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" id="">記事更新</button><span class="br"></span><a href="" style="display:none" id="ajaxUrl" class="">test</a><span id="ajaxTitle" class="">' + data.title + '</span>');
+			$("#"+change).html('<img src="icon/usericon.jpg" class="icon"/>' +username+ '<span class="br"></span><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this)" id="">記事更新</button><span class="br"></span><a href="" style="display:none" id="ajaxUrl" class="">test</a><span id="ajaxTitle" class="">' + data.title + '</span>');
 			$("#ajaxUrl").attr("href",data.url);
 			$("#"+change).children("button").attr("id",hiduke);
 			$("#"+change).children("#ajaxTitle").attr("class",hiduke);
@@ -62,7 +107,7 @@ function submit(){
 		});
 	}
 	
-function edit(){
+function articleEdit(){
 	$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
       	var token = $("meta[name='_csrf']").attr("content");
       	var header = $("meta[name='_csrf_header']").attr("content");
@@ -83,7 +128,7 @@ function edit(){
 		var hiduke = $("#"+change).find("button").attr("id");
 		console.log(change);
 		console.log(hiduke);
-		$("#"+change).html('<img src="icon/usericon.jpg" class="icon"/>' +username+ '<span class="br"></span><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" id="">記事更新</button><span class="br"></span><a href="" style="display:none" id="ajaxUrl" class="">test</a><span id="ajaxTitle" class="">' + data.title + '</span>');
+		$("#"+change).html('<img src="icon/usericon.jpg" class="icon"/>' +username+ '<span class="br"></span><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this)" id="">記事更新</button><span class="br"></span><a href="" style="display:none" id="ajaxUrl" class="">test</a><span id="ajaxTitle" class="">' + data.title + '</span>');
 		$("#ajaxUrl").attr("href",data.url);
 		$("#"+change).children("button").attr("id",hiduke);
 		$("#"+change).children("#ajaxTitle").attr("class",hiduke);
@@ -93,6 +138,37 @@ function edit(){
 		$('#editArticle').modal('hide');
 	}).fail(function(data){
 		$("#editDate").append('<p class="red">通信エラーが発生しました。しばらくしてから再度お試しください。</p>')
+	});
+}
+
+function articleDelete(){
+	$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+      	var token = $("meta[name='_csrf']").attr("content");
+      	var header = $("meta[name='_csrf_header']").attr("content");
+      	jqXHR.setRequestHeader(header, token);
+	});
+    var jsonString = $('form[name=editArticle]').serializeArray();
+  	var formData = JSON.stringify(jsonString);
+	$.ajax({
+		type: 'POST',
+		url: '/deleteAjax',
+		data: JSON.stringify(jsonString),
+		contentType: 'application/json',
+		datatype: 'json',
+		scriptCharset: 'utf-8'
+	}).done(function(data){
+		var change = $("#deleteSubmit").attr("data-change");
+		var hiduke = $("#"+change).find("button").attr("id");
+		console.log(change);
+		console.log(hiduke);
+		$("#"+change).removeClass("article").addClass("articleButton");
+		$("#"+change).html('<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createArticle" onClick="getID(this)" id="">記事登録</button>');
+		$("#"+change).children("button").attr("id",hiduke);
+		$('body').removeClass('modal-open');
+		$('.modal-backdrop').remove();
+		$('#editArticle').modal('hide');
+	}).fail(function(data){
+		$("#createDate").append('<p class="red">通信エラーが発生しました。しばらくしてから再度お試しください。</p>')
 	});
 }
 
@@ -243,7 +319,7 @@ function getEditID(element) {
 					
 					<div th:if="${days.article} == null and ${days.isEnabled} and ${days.isAvalable} and ${days.isArrive} == false" class="articleButton" th:id="${days.day}">
 						
-							<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createArticle" onclick="getID(this)" th:id="${days.date}"
+							<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createArticle" onClick="getID(this)" th:id="${days.date}"
 							sec:authorize="isAuthenticated()">
 								記事登録
 							</button>
@@ -278,10 +354,7 @@ function getEditID(element) {
 					
 					<div th:if="${days.isRegistered} and ${days.isAvalable} and ${days.isArrive} == false" class="article" th:id="${days.day}">
 
-						<img src="icon/usericon.jpg" class="icon"/>
-						<span th:object="${users}" th:each="users:${users}">
-							<span th:if="${users.id} == ${days.article.userid}" th:text="${users.username}">username</span>
-							</span>
+						<img src="icon/usericon.jpg" class="icon"/><span th:object="${users}" th:each="users:${users}"><span th:if="${users.id} == ${days.article.userid}" th:text="${users.username}">username</span></span>
 						<span class="br" th:if="${days.article.userid} == ${loginid}"></span>
 							<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" th:id="${days.date}"
 							th:if ="${days.article.userid} == ${loginid}" sec:authorize="isAuthenticated()">
@@ -349,20 +422,18 @@ function getEditID(element) {
 							<input type="text" name="title" th:field="*{title}" placeholder="タイトル" required="required" autofocus="autofocus" class="form-control" />
 						</div>
 						
-						<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="help-block">タイトルは3文字以上で入力してください。</span>
+						<span class="title"></span>
 						<span class="br"></span>
 						
 						<div class="form-group">
 							<label>URL</label>
 							<input type="url" name="url" th:field="*{url}" placeholder="URL" required="required" class="form-control" />
 						</div>
-						
-						<span class="br"></span>
-						<button class="btn btn-1g btn-primary btn-block" type="submit">投稿</button>
+						<span class="url"></span>
 						
 					</form>
 						
-						<button class="btn btn-lg btn-block" id="articleSubmit" name="" onClick="submit();" data-change="">Ajax版投稿</button>
+						<button class="btn btn-1g btn-primary btn-block" id="articleSubmit" name="" onClick="articleCreate();" data-change="" disabled>投稿</button>
 					
 					
 			</div>
@@ -410,7 +481,7 @@ function getEditID(element) {
 				
 				</div>
 				
-					<form name="editArticle" method="post" th:object="${articleForm}" th:action="@{/edit}">
+					<form name="editArticle" method="post" th:object="${articleForm}" th:action="@{/edit}" id="editArticleForm">
 					
 						<input type="hidden" name="userid" th:field="*{userid}" value="" />
 						<input type="hidden" name="calendarDate" th:field="*{calendarDate}" placeholder="日付" value="" />
@@ -418,19 +489,18 @@ function getEditID(element) {
 						<label>タイトル</label>
 						<input type="text" name="title" th:field="*{title}" placeholder="タイトル" required="required" autofocus="autofocus" class="form-control" />
 						</div>
-						<span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="help-block">タイトルは3文字以上で入力してください。</span>
+						<span class="title"></span>
 						<span class="br"></span>
 						<div class="form-group">
 						<label>URL</label>
 						<input type="url" name="url" th:field="*{url}" placeholder="URL" required="required" class="form-control" />
 						</div>
+						<span class="url"></span>
 						<span class="br"></span>
-						<button class="btn btn-lg btn-primary" type="submit">更新</button>
-						<button class="btn btn-lg btn-danger" type="submit" th:formaction="@{/delete}">削除</button>
 						
 					</form>
-					<button class="btn btn-lg btn-block" id="editSubmit" onClick="edit();" data-change="">Ajax版更新</button>
-					
+						<button class="btn btn-lg btn-primary" id="editSubmit" onClick="articleEdit();" data-change="" disabled>更新</button>
+						<button class="btn btn-lg btn-danger" id="deleteSubmit" onClick="articleDelete();" data-change="">削除</button>
 				</div>
 						
 			</div>

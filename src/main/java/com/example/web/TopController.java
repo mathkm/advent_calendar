@@ -258,6 +258,27 @@ public class TopController {
 		return data;
 	}
 
+	@ResponseBody
+	@PostMapping(value = "/deleteAjax", produces = "application/json; charset=UTF-8")
+	String deleteAjax(@RequestBody String json) throws IOException, ServletException {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonObject = mapper.readTree(json);
+		String strCalendarDate = jsonObject.get(1).get("value").asText();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date javaDate = null;
+		try {
+			javaDate = sdf.parse(strCalendarDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		java.sql.Date calendarDate = format.parseSql(javaDate);
+		Article article = new Article();
+		articleService.delete(calendarDate);
+		String data = mapper.writeValueAsString(article);
+		return data;
+	}
+
 	@PostMapping(path = "edit")
 	String edit(@Validated ArticleForm form, BindingResult result, Model model) {
 		if (result.hasErrors()) {
