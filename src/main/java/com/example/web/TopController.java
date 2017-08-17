@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.servlet.ServletException;
+import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

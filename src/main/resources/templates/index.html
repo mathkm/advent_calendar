@@ -25,41 +25,41 @@ $(function(){
 		$("#deleteSubmit").attr({"data-change":ArticleID});
 		});
     
-    var flag = false;
-    var flag2 = false;
+    var flag = true;
+    var flag2 = true;
   
-    $("input[name='url']").blur(function(){
+    $("input[name='url']").change(function(){
 		if ($(this).val() != "" && $(this).val() != "http://" && $(this).val() != "https://"){
 			if ($(this).val().slice(0, 7) == "http://" || $(this).val().slice(0, 8) == "https://") {
 				var checkDot = $(this).val().split(".");
 				if (1 < checkDot.length) {
-					$('.url').html('OK');
+					$('.url').html('<span class="blue">OK</span>');
 					flag = true;
 				}else{
-					$('.url').html('URLの形式でご記入ください。');
+					$('.url').html('<span class="red">URLの形式でご記入ください。</span>');
 					flag = false;
 				}
     		}else{
-    			$('.url').html('http://またはhttps://から書いてください。');
+    			$('.url').html('<span class="red">http://またはhttps://から書いてください。</span>');
     			flag = false;
     		}
 		}else{
-			$('.url').html('空欄または、http://・https://だけでは投稿できません。');
+			$('.url').html('<span class="red">空欄または、http://・https://だけでは投稿できません。</span>');
 			flag = false;
 		}
 	});
     
-    $("input[name='title']").blur(function(){
+    $("input[name='title']").change(function(){
 	  	if($(this).val() == ""){
-	   		$('.title').html('空やで');
+	   		$('.title').html('<span class="red">空欄です。</span>');
 	   		flag2 = false;
 	    	}else{
-	    	$('.title').html('OK');
+	    	$('.title').html('<span class="blue">OK</span>');
 	    	flag2 = true;
 	    }
     });
     
-    $("input[name='url'],input[name='title']").keyup(function(){
+    $("input[name='url'],input[name='title']").change(function(){
 		console.log(flag);
 		console.log(flag2);
     	if(flag == true && flag2 == true){
@@ -338,12 +338,11 @@ function getEditID(element) {
 						<span th:object="${users}" th:each="users:${users}">
 							<span th:if="${users.id} == ${days.article.userid}" th:text="${users.username}">username</span>
 						</span>
-						<span class="br"  th:if ="${days.article.userid} == ${loginid}">
+						<span class="br"  th:if ="${days.article.userid} == ${loginid}"></span>
 							<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" th:id="${days.date}"
-							sec:authorize="isAuthenticated()">
+							sec:authorize="isAuthenticated()" th:if ="${days.article.userid} == ${loginid}">
 								記事更新
 							</button>
-						</span>
 						<span class="br">
 						</span>
 						<a th:href="${days.article.url}" th:class="${days.date}" target="_blank">
