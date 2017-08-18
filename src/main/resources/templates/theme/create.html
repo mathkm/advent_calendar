@@ -73,7 +73,7 @@ document.editTheme.createdUserid.value=subid;
 		
 				<div class="titlebox">
 
-					<h2>アドベントカレンダー</h2>
+					<h2><a href="/">アドベントカレンダー</a></h2>
 					
 				</div>
 				
@@ -88,7 +88,7 @@ document.editTheme.createdUserid.value=subid;
 					<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a>
 					<a href = "/theme" sec:authorize="hasRole('ROLE_ADMIN')" class="br">テーマ管理</a>
 					<a href = "/" sec:authorize="isAuthenticated()" class="br">トップ画面へ戻る</a><span class="br"></span>
-					<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()"><input type="submit" class="btn btn-default btn-xs" value="ログアウト" /></form>
+					<input type="submit" class="btn btn-default btn-xs" value="ログアウト" th:formaction="@{/logout}"  sec:authorize="isAuthenticated()" formnovalidate="formnovalidate" />
 				</div>
 	
 			</div>

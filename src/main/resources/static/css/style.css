@@ -94,6 +94,21 @@
 	text-align:left;
 }
 
+.titlebox a:hover{
+	text-decoration:none;
+	color:#000000;
+}
+
+.titlebox a:link{
+	text-decoration:none;
+	color:#000000;
+	}
+
+.titlebox a:visited{
+	text-decoration:none;
+	color:#000000;
+	}
+
 .stat{
 	vertical-align:top;
 	widht:20%;

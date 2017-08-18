@@ -13,6 +13,10 @@
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 <script type="text/javascript">
 $(function(){
+    
+	var flag = true;
+    var flag2 = true;
+    
 	$("#menubutton").click(function() {
 		  $("#usermenu").slideToggle();
 		});
@@ -23,12 +27,31 @@ $(function(){
 		$("#articleSubmit").attr({"data-change":ArticleID});
 		$("#editSubmit").attr({"data-change":ArticleID});
 		$("#deleteSubmit").attr({"data-change":ArticleID});
+		
 		});
     
-    var flag = true;
-    var flag2 = true;
+	$('#createArticle').on('hidden.bs.modal', function () {
+		flag = false;
+		flag2 = false;
+		console.log(flag);
+		console.log(flag2);
+		$("input[name='url'],input[name='title']").val("").end();
+	});
+	$('#editArticle').on('hidden.bs.modal', function () {
+		flag = true;
+		flag = true;
+		$("#articleSubmit,#editSubmit").prop('disabled', false);
+		$("input[name='url'],input[name='title']").val("").end();
+		console.log(flag);
+		console.log(flag2);
+	});
+	$('#editArticle').on('show.bs.modal' , function() {
+		flag = true;
+		flag2 = true;
+		$("#articleSubmit,#editSubmit").prop('disabled', false);
+	});
   
-    $("input[name='url']").change(function(){
+    $("input[name='url']").keyup(function(){
 		if ($(this).val() != "" && $(this).val() != "http://" && $(this).val() != "https://"){
 			if ($(this).val().slice(0, 7) == "http://" || $(this).val().slice(0, 8) == "https://") {
 				var checkDot = $(this).val().split(".");
@@ -49,17 +72,22 @@ $(function(){
 		}
 	});
     
-    $("input[name='title']").change(function(){
+    $("input[name='title']").keyup(function(){
 	  	if($(this).val() == ""){
 	   		$('.title').html('<span class="red">空欄です。</span>');
 	   		flag2 = false;
 	    	}else{
+		   		if($(this).val().length >= 30){
+		   			$('.title').html('<span class="red">タイトルは30文字未満でご記入ください。</span>');
+		   			flag2 = false;
+		   		}else{
 	    	$('.title').html('<span class="blue">OK</span>');
 	    	flag2 = true;
+		   	}
 	    }
     });
     
-    $("input[name='url'],input[name='title']").change(function(){
+    $("input[name='url'],input[name='title']").keyup(function(){
 		console.log(flag);
 		console.log(flag2);
     	if(flag == true && flag2 == true){
@@ -226,7 +254,9 @@ function getEditID(element) {
 		<div class="tr">
 		
 				<div class="titlebox">
-						<h2>アドベントカレンダー</h2>
+				
+						<h2><a href="/">アドベントカレンダー</a></h2>
+				
 				</div>
 	
 			<div class="stat">
@@ -418,7 +448,7 @@ function getEditID(element) {
 						
 						<div class="form-group">
 							<label>タイトル</label>
-							<input type="text" name="title" th:field="*{title}" placeholder="タイトル" required="required" autofocus="autofocus" class="form-control" />
+							<input type="text" name="title" th:field="*{title}" placeholder="タイトル" required="required" autofocus="autofocus" class="form-control" autocomplete="off" />
 						</div>
 						
 						<span class="title"></span>
@@ -426,7 +456,7 @@ function getEditID(element) {
 						
 						<div class="form-group">
 							<label>URL</label>
-							<input type="url" name="url" th:field="*{url}" placeholder="URL" required="required" class="form-control" />
+							<input type="url" name="url" th:field="*{url}" placeholder="URL" required="required" class="form-control" autocomplete="off" />
 						</div>
 						<span class="url"></span>
 						
@@ -486,13 +516,13 @@ function getEditID(element) {
 						<input type="hidden" name="calendarDate" th:field="*{calendarDate}" placeholder="日付" value="" />
 						<div class="form-group">
 						<label>タイトル</label>
-						<input type="text" name="title" th:field="*{title}" placeholder="タイトル" required="required" autofocus="autofocus" class="form-control" />
+						<input type="text" name="title" th:field="*{title}" placeholder="タイトル" required="required" autofocus="autofocus" class="form-control" autocomplete="off" />
 						</div>
 						<span class="title"></span>
 						<span class="br"></span>
 						<div class="form-group">
 						<label>URL</label>
-						<input type="url" name="url" th:field="*{url}" placeholder="URL" required="required" class="form-control" />
+						<input type="url" name="url" th:field="*{url}" placeholder="URL" required="required" class="form-control" autocomplete="off" />
 						</div>
 						<span class="url"></span>
 						<span class="br"></span>
