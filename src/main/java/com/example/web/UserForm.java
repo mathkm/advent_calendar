@@ -7,19 +7,20 @@ import lombok.Data;
 
 @Data
 public class UserForm {
-	
+
 	@NotNull
-	@Size(min = 1,max = 255)
+	@Size(min = 1, max = 255)
 	private String username;
-	
+
 	@NotNull
-	@Size(min = 4,max = 255)
+	@Size(min = 4, max = 255)
 	private String password;
-	
+
 	@NotNull
-	@Size(min = 1,max = 255)
+	@Size(min = 1, max = 255)
 	private String email;
-	
+
 	@NotNull
 	private byte role;
+
 }

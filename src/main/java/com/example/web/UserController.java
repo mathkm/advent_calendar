@@ -31,7 +31,12 @@ public class UserController {
 		return "users/list";
 	}
 
-	@PostMapping(path = "create")
+	@GetMapping(path = "/create")
+	String createForm() {
+		return "users/create";
+	}
+
+	@PostMapping(path = "/create")
 	String create(@Validated UserForm form, BindingResult result, Model model) {
 		if (result.hasErrors()) {
 			return list(model);
@@ -42,17 +47,21 @@ public class UserController {
 		return "redirect:/users";
 	}
 
-	@GetMapping(path = "edit", params = "form")
-	String editForm(@RequestParam Integer id, UserForm form) {
+	@GetMapping(path = "/edit", params = "form")
+	String editForm(@RequestParam Integer id, UserForm form, Model model) {
 		User user = userService.findOne(id);
+		java.util.Date created = user.getCreated();
+		java.util.Date updated = user.getUpdated();
+		model.addAttribute("created", created);
+		model.addAttribute("updated", updated);
 		BeanUtils.copyProperties(user, form);
 		return "users/edit";
 	}
 
-	@PostMapping(path = "edit")
-	String edit(@RequestParam Integer id, @Validated UserForm form, BindingResult result) {
+	@PostMapping(path = "/edit")
+	String edit(@RequestParam Integer id, @Validated UserForm form, BindingResult result, Model model) {
 		if (result.hasErrors()) {
-			return editForm(id, form);
+			return editForm(id, form, model);
 		}
 		User user = new User();
 		BeanUtils.copyProperties(form, user);
@@ -61,12 +70,12 @@ public class UserController {
 		return "redirect:/users";
 	}
 
-	@GetMapping(path = "edit", params = "gotToTop")
+	@PostMapping(path = "/edit", params = "goToTop")
 	String goToTop() {
 		return "redirect:/users";
 	}
 
-	@PostMapping(path = "delete")
+	@PostMapping(path = "/delete")
 	String delete(@RequestParam Integer id) {
 		userService.delete(id);
 		return "redirect:/users";

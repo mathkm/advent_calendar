@@ -141,7 +141,7 @@ document.editTheme.updatedUserid.value=subid;
 					
 					<div class="form-group">
 						<label>テキスト</label>
-						<input type="text" th:value="${theme.detail}" name="detail" id="detail" required="required" class="form-control input-lg" />
+						<textarea th:text="${theme.detail}" name="detail" id="detail" required="required" class="form-control input-lg"></textarea>
 					</div>
 					
 					<span th:if="${#fields.hasErrors('detail')}" class="help-block" th:errors="*{detail}">Error</span>
@@ -184,11 +184,14 @@ document.editTheme.updatedUserid.value=subid;
 						<span th:text="${days.day}" th:class="gray" th:if = "${days.isAvalable} == false">日付</span>
 					</div>
 					
-					<div class="article" style="text-align:center;vertical-align:middle;cursor:pointer;"
+					<div class="article" style="text-align:center;vertical-align:middle;cursor:pointer;padding:25%;"
 						th:if="${days.isEnabled} == true and ${days.isHoliday} == false and ${days.isAvalable} == true" th:id="${days.day}">◯</div>
 					
-					<div class="article" style="text-align:center;vertical-align:middle;cursor:pointer"
+					<div class="article" style="text-align:center;vertical-align:middle;cursor:pointer;padding:25%;"
 						th:if="${days.isEnabled} == false and ${days.isAvalable} == true or ${days.isHoliday} == true and ${days.isAvalable} == true" th:id="${days.day}">☓</div>
+					
+					<div class="articleButton" style="text-align:center;vertical-align:middle;cursor:default;color:#BDBDBD"
+						th:if="${days.isAvalable} == false">-</div>
 					
 				</div>
 				

@@ -23,7 +23,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/loginForm", "/", "/nextmonth", "/backmonth").permitAll()
-				.antMatchers("/users", "/theme").hasRole("ADMIN").anyRequest().authenticated();
+				.antMatchers("/users", "/theme", "/theme/create", "/theme/edit").hasRole("ADMIN").anyRequest()
+				.authenticated();
 		http.formLogin().loginProcessingUrl("/login").loginPage("/loginForm").failureUrl("/loginForm?error")
 				.defaultSuccessUrl("/").usernameParameter("username").passwordParameter("password").and().logout()
 				.logoutSuccessUrl("/");
