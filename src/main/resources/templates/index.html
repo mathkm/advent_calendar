@@ -15,7 +15,7 @@
 $(function(){
     
 	var flag = true;
-    var flag2 = true;
+    var flag2 = false;
     
 	$("#menubutton").click(function() {
 		  $("#usermenu").slideToggle();
@@ -31,24 +31,25 @@ $(function(){
 		});
     
 	$('#createArticle').on('hidden.bs.modal', function () {
-		flag = false;
+		flag = true;
 		flag2 = false;
 		console.log(flag);
 		console.log(flag2);
+		$('#articleSubmit,#editSubmit').prop('disabled',true);
 		$("input[name='url'],input[name='title']").val("").end();
 	});
 	$('#editArticle').on('hidden.bs.modal', function () {
 		flag = true;
-		flag = true;
-		$("#articleSubmit,#editSubmit").prop('disabled', false);
+		flag = false;
+		$("#articleSubmit,#editSubmit").prop('disabled', true);
 		$("input[name='url'],input[name='title']").val("").end();
 		console.log(flag);
 		console.log(flag2);
 	});
 	$('#editArticle').on('show.bs.modal' , function() {
 		flag = true;
-		flag2 = true;
-		$("#articleSubmit,#editSubmit").prop('disabled', false);
+		flag2 = false;
+		$("#articleSubmit,#editSubmit").prop('disabled', true);
 	});
   
     $("input[name='url']").keyup(function(){
@@ -67,8 +68,8 @@ $(function(){
     			flag = false;
     		}
 		}else{
-			$('.url').html('<span class="red">空欄または、http://・https://だけでは投稿できません。</span>');
-			flag = false;
+			$('.url').html('<span class="blue">空欄でも投稿はできます。記入される場合はURLの形式をご確認ください。</span>');
+			flag = true;
 		}
 	});
     
@@ -77,8 +78,8 @@ $(function(){
 	   		$('.title').html('<span class="red">空欄です。</span>');
 	   		flag2 = false;
 	    	}else{
-		   		if($(this).val().length >= 30){
-		   			$('.title').html('<span class="red">タイトルは30文字未満でご記入ください。</span>');
+		   		if($(this).val().length >= 255){
+		   			$('.title').html('<span class="red">タイトルは255文字未満でご記入ください。</span>');
 		   			flag2 = false;
 		   		}else{
 	    	$('.title').html('<span class="blue">OK</span>');
@@ -312,7 +313,7 @@ function getEditID(element) {
 			<div class="tr">
 			
 				<div id="details">
-			
+					
 					<span class="br">今月のテーマは<span th:text = "${theme.name}">テーマ</span></span>
 					<span class="br" th:text="${theme.detail}">ディテール</span>
 		

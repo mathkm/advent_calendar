@@ -115,7 +115,8 @@ $(function(){
 							<div class="col-sm-offset-2 col-sm-10">
 								<input type="hidden" name="id" th:value="${param.id[0]}" />
 								<button type="submit" class="btn btn-primary btn-lg">更新</button>
-								<button class="btn btn-danger btn-lg" type="submit" th:formaction="@{/users/delete}" id="delete">削除</button>
+								<button class="btn btn-danger btn-lg" th:if="${#httpServletRequest.remoteUser} == *{username}" disabled>削除</button>
+								<button class="btn btn-danger btn-lg" type="submit" th:formaction="@{/users/delete}" id="delete" th:if="${#httpServletRequest.remoteUser} != *{username}">削除</button>
 								<button name="goToTop" type="submit" class="btn btn-default btn-lg" formnovalidate="formnovalidate">戻る</button>
 							</div>
 						</div>				
