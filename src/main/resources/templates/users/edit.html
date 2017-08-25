@@ -68,62 +68,63 @@ $(function(){
 	
 	<div class="admintable">
 		
-		<form th:action="@{/users/edit}" th:object="${userForm}" method="post" class="form-horizontal">
+		<form th:action="@{/users/edit}" th:object="${userEditForm}" method="post" class="form-horizontal">
 			<fieldset>
 				<legend>ユーザー情報編集</legend>
+					<div class="form-group">
+						<label for="id" class="col-sm-2 control-label">ID</label>
+							<div class="col-sm-10">
+								<input type="text" id="id" th:value="${param.id[0]}" class="stealthInput" disabled />
+							</div>
+					</div>
 					<div class="form-group" th:classapend="${#fields.hasErrors('username')}? 'has-error has-feedback'">
-						<label for="lastName" class="col-sm-2 control-label">ユーザーネーム</label>
+						<label for="lastName" class="col-sm-2 control-label">名前</label>
 							<div class="col-sm-10">
 								<input type="text" id="username" name="username" th:field="*{username}" class="form-control" value="山田" />
-									<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="help-block">error!</span>
+								<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="help-block">error!</span>
 							</div>
-						<label for="password" class="col-sm-2 control-label">パスワード</label>
-						<div class="col-sm-10">
-							<input type="text" id="password" name="password" th:field="*{password}" class="form-control" value="太郎" />
-							<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="help-block">error!</span>
-						</div>
+					</div>
+					<div class="form-group" th:classapend="${#fields.hasErrors('email')}? 'has-error has-feedback'">
 						<label for="email" class="col-sm-2 control-label">メールアドレス</label>
-						<div class="col-sm-10">
-							<input type="email" id="email" name="email" th:field="*{email}" class="form-control" value="めーる" />
-							<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="help-block">error!</span>
-						</div>
-						<label for="role" class="col-sm-2 control-label">権限</label>
-						<div class="col-sm-10">
-							<input type="radio" name="role" th:value="1" id="role" th:field="*{role}" class="form-control" />通常ユーザー
-							<input type="radio" name="role" th:value="127" id="role" th:field="*{role}" class="form-control" />管理者
-							<span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="help-block">error!</span>
-						</div>
-						</div>
-						</fieldset>	
-						<div class="container-fluid">
-						<div class="row">
-						<div class="col-sm-10">
-						<strong>登録日時</strong>
-						</div>
-						<div class="col-sm-10">
-							<span th:text="${#dates.format(created,'yyyy/MM/dd HH:MM')}"></span>	
-						</div>
-						<div class="col-sm-10">
-						<strong>更新日時</strong>
-						</div>
-						<div class="col-sm-10">
-							<span th:text="${#dates.format(updated,'yyyy/MM/dd HH:MM')}"></span>
-						</div>
-						</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-10">
-								<input type="hidden" name="id" th:value="${param.id[0]}" />
-								<button type="submit" class="btn btn-primary btn-lg">更新</button>
-								<button class="btn btn-danger btn-lg" th:if="${#httpServletRequest.remoteUser} == *{username}" disabled>削除</button>
-								<button class="btn btn-danger btn-lg" type="submit" th:formaction="@{/users/delete}" id="delete" th:if="${#httpServletRequest.remoteUser} != *{username}">削除</button>
-								<button name="goToTop" type="submit" class="btn btn-default btn-lg" formnovalidate="formnovalidate">戻る</button>
+							<div class="col-sm-10">
+								<input type="email" id="email" name="email" th:field="*{email}" class="form-control" value="めーる" />
+								<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="help-block">error!</span>
 							</div>
-						</div>				
-					</form>
-					
+					</div>
+					<div class="form-group checkbox" th:classapend="${#fields.hasErrors('role')}? 'has-error has-feedback'">
+						<strong class="col-sm-2 control-label" >権限</strong>
+							<label>
+								<input type="radio" name="role" th:value="1" id="role" th:field="*{role}" />User
+							</label>
+							<label>
+								<input type="radio" name="role" th:value="127" id="role" th:field="*{role}" />Admin
+							</label>
+								<span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="help-block">error!</span>
+					</div>
+					<div class="form-group">
+						<label for="created" class="col-sm-2 control-label">登録日時</label>
+							<div class="col-sm-10">
+								<input type = "text" id = "created" th:value="${#dates.format(created,'yyyy/MM/dd HH:MM')}" disabled class="stealthInput" />
+							</div>
+					</div>
+					<div class="form-group">
+						<label for="created" class="col-sm-2 control-label">更新日時</label>
+							<div class="col-sm-10">
+								<input type = "text" id = "updated" th:value="${#dates.format(updated,'yyyy/MM/dd HH:MM')}" disabled class="stealthInput" />
+							</div>
+					</div>
+				</fieldset>	
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<input type="hidden" name="id" th:value="${param.id[0]}" />
+							<button type="submit" class="btn btn-primary btn-lg">更新</button>
+							<button class="btn btn-danger btn-lg" th:if="${#httpServletRequest.remoteUser} == *{username}" disabled>削除</button>
+							<button class="btn btn-danger btn-lg" type="submit" th:formaction="@{/users/delete}" id="delete" th:if="${#httpServletRequest.remoteUser} != *{username}">削除</button>
+							<button name="goToTop" type="submit" class="btn btn-default btn-lg" formnovalidate="formnovalidate" formaction="/users/back">戻る</button>
+						</div>
+					</div>				
+				</form>
 			</div>
-	
 		</div>
-</body>
+	</body>
 </html>

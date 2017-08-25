@@ -92,16 +92,14 @@ $(function(){
 	
 	<div class="admintable">
 		
-		<div th:each="theme:${theme}" class="tr">
-			
+			<div th:each="theme:${theme}" class="tr">
 			<form th:action="@{/theme/edit}" method="get">
 				<input type="hidden" name="id" th:value="${theme.id}" />
 				<button class="listbutton" type="submit" name="form" value="edit">
-				<div th:text="${#dates.format(theme.calendarMonth,'yyyy/MM/dd')}" class="adminlists"></div>
+				<div th:text="${#dates.format(theme.calendarMonth,'yyyy.MM')}" class="adminlist"></div>
 				<div th:text="${theme.name}" class="adminlist"></div>
 				</button>
 			</form>
-		
 		</div>
 
 	</div>

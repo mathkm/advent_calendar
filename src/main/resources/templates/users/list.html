@@ -102,9 +102,9 @@ $(function(){
 			
 			<form th:action="@{/users/edit}" method="get">
 				<button class="listbutton" type="submit" name="form" value="編集">
-				<div th:text="${users.id}" class="adminlist"></div>
-				<div th:text="${users.username}" class="adminlist"></div>
-				<div th:text="${#dates.format(users.created,'yyyy/MM/dd HH:MM')}" class="adminlists"></div>
+				<div th:text="${users.id}" class="subtitle"></div>
+				<div th:text="${users.username}" class="subtitle"></div>
+				<div th:text="${#dates.format(users.created,'yyyy/MM/dd HH:MM')}" class="subtitle"></div>
 				</button>
 				<input type="hidden" name="id" th:value="${users.id}" />
 			</form>

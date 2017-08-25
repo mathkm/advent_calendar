@@ -15,33 +15,33 @@ import java.util.List;
 public class UserService {
 	@Autowired
 	UserManageRepository userRepository;
-	
-	public List<User> findAll(){
-		return userRepository.findAllOrderById();
+
+	public List<User> findAll() {
+		return userRepository.findAllOrderByCreated();
 	}
-	
-	public User findOne(Integer id){
+
+	public User findOne(Integer id) {
 		return userRepository.findOne(id);
 	}
-	
-	public User findByUsername(String username){
+
+	public User findByUsername(String username) {
 		return userRepository.findByUsername(username);
 	}
-	
-	public User create(User user){
-		//入力されたパスワードをハッシュ化してから登録する。
+
+	public User create(User user) {
+		// 入力されたパスワードをハッシュ化してから登録する。
 		String beforePw = user.getPassword();
 		GenPassword genPw = new GenPassword();
 		String afterpw = genPw.hashpw(beforePw);
 		user.setPassword(afterpw);
 		return userRepository.save(user);
 	}
-	
-	public User update(User user){
-		return userRepository.save(user);
+
+	public int update(String username, String email, byte role, int id) {
+		return userRepository.updateById(username, email, role, id);
 	}
-	
-	public void delete(Integer id){
+
+	public void delete(Integer id) {
 		userRepository.delete(id);
 	}
 

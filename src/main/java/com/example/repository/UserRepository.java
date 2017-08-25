@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends JpaRepository<User,String> {
+public interface UserRepository extends JpaRepository<User, String> {
 	@Query("SELECT x FROM User x ORDER BY x.id")
-	List<User> findAllOrderById();
+	public List<User> findAllOrderByid();
+
 	public User findByUsername(String username);
 }
