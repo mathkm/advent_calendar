@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.min.css}" />
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+$(function(){
+	$("#menubutton").click(function() {
+		  $("#usermenu").slideToggle();
+		});
+});
+</script>
+<script type="text/javascript">
+function checkpw(input){
+    var password = CheckPassword.value; //メールフォームの値を取得
+    var passwordConfirm = input.value; //メール確認用フォームの値を取得(引数input)
+
+    // パスワードの一致確認
+    if(password != passwordConfirm){
+      input.setCustomValidity('passwordが一致しません。'); // エラーメッセージのセット
+    }else{
+      input.setCustomValidity(''); // エラーメッセージのクリア
+    }
+  }
+
+</script>
+<title>アドベントカレンダー</title>
+</head>
+<body>
+
+<div th:object="${users}" th:each="users:${users}"  th:if="${username} == ${users.username}">
+
+	<form name="usrid">
+		<input type="hidden" name="subid" th:value="${users.id}" />	
+	</form>
+	
+</div>
+<div class="adminbody">
+
+	<div class="adminheader">
+	
+		<div class="tr">
+		
+				<div class="titlebox">
+
+					<h2><a href="/">アドベントカレンダー</a></h2>
+					
+				</div>
+				
+			<div class="stat">
+			
+				<a href="/loginForm" sec:authorize="isAnonymous()">ログイン</a><br sec:authorize="isAnonymous()" />
+				<span sec:authentication="principal.user.username" sec:authorize="isAuthenticated()">duke　さん</span><br sec:authorize="isAuthenticated()"  />
+				<img src="/icon/usericon.jpg" sec:authorize="isAuthenticated()" class="usericon" />
+				<div id="menubutton" sec:authorize="isAuthenticated()">▼</div>
+				
+				<div id="usermenu" sec:authorize="isAuthenticated()">
+					<a href = "/users" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</a>
+					<a href = "/theme" sec:authorize="hasRole('ROLE_ADMIN')" class="br">テーマ管理</a>
+					<a href = "/" sec:authorize="isAuthenticated()" class="br">トップ画面へ戻る</a><span class="br"></span>
+					<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()"><input type="submit" class="btn btn-default btn-xs" value="ログアウト" /></form>
+				</div>
+	
+			</div>
+				
+			</div>
+		
+		</div>
+		
+		<div class="table" style="width:80%;margin-left:auto;margin-right:auto;">
+	
+		<div class="tr">
+		
+			<div class="title">
+			
+				<h3>ユーザーの追加</h3>
+			
+			</div>
+			
+		</div>
+				
+	</div>
+		
+		
+	<div class="admintable">
+				
+	<div class="col-sm-12">
+	
+	<form th:action="@{/users/create}" th:object="${userForm}" method="post" class="form-horizontal" onSubmit="CheckPassword()">
+	<fieldset>
+	<legend>ユーザ情報記入</legend>
+	<div class="form-group">
+		<label for="id" class="col-sm-2 control-label">ID</label>
+			<div class="col-sm-10">
+				<input value="IDは自動で付与されます" id="id" class="stealthInput" disabled/>
+			</div>
+	</div>
+	<div class="form-group">
+		<label for="username" class="col-sm-2 control-label">ユーザーネーム</label>
+			<div class="col-sm-10">
+				<input type="text" id="username" name="username" th:field="*{username}" class="form-control" value="" />
+				<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="help-block">error!</span>
+			</div>
+	</div>
+	<div class="form-group">
+		<label for="password" class="col-sm-2 control-label">パスワード</label>
+			<div class="col-sm-10">
+				<input type="password" id="CheckPassword" name="password" th:field="*{password}" class="form-control" value="" />
+				<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="help-block">error!</span>
+			</div>
+	</div>
+	<div class="form-group">
+		<label for="confirmPassword" class="col-sm-2 control-label">パスワード再確認</label>
+			<div class="col-sm-10">
+				<input type="password" id="confirmPassword" name ="confirmPassword" class="form-control" value="" oninput="checkpw(this)" required />
+				<span class="checkpw"></span>
+			</div>
+	</div>
+	<div class="form-group">
+		<label for="email" class="col-sm-2 control-label">メールアドレス</label>
+			<div class="col-sm-10">
+				<input type="email" id="email" name="email" th:field="*{email}" class="form-control" value="" />
+				<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="help-block">error!</span>
+			</div>
+	</div>
+	<div class="form-group checkbox">
+		<strong class="col-sm-2 control-label">権限</strong>
+			<div class="col-sm-10">
+				<label>
+					<input type="radio" value="1" checked name="role" />User
+				</label>
+				<label>
+					<input type="radio" name="role" value="127" id="role" />Admin
+				</label>
+				<span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="help-block">error!</span>
+			</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-primary btn-lg">作成</button>
+			<button name="goToTop" type="submit" class="btn btn-default btn-lg" formnovalidate="formnovalidate" formaction="/users/back">戻る</button>
+		</div>
+	</div>
+	</fieldset>
+	</form>
+				
+		
+		</div>
+			
+	</div>
+		
+</div>
+</body>
+</html>

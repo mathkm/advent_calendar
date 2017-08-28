@@ -131,7 +131,7 @@ function articleCreate(){
 			console.log(hiduke);
 			$("#"+change).removeClass("articleButton").addClass("article");
 			$("#"+change).html('<div id="" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" class="editableArticle" ><img src="icon/usericon.jpg" class="icon"/>' +username+ '<span class="br"></span><a href="" style="display:none" id="ajaxUrl" class="">test</a><span id="ajaxTitle" class="">' + data.title + '</span></div>');
-			$("#ajaxUrl").attr("href",data.url);
+			$("#"+change).children(".editableArticle").children("#ajaxUrl").attr("href",data.url);
 			$("#"+change).children(".editableArticle").attr("id",hiduke);
 			$("#"+change).children(".editableArticle").children("#ajaxTitle").attr("class",hiduke);
 			$("#"+change).children(".editableArticle").children("#ajaxUrl").attr("class",hiduke);
@@ -167,7 +167,7 @@ function articleEdit(){
 		console.log(change);
 		console.log(hiduke);
 		$("#"+change).html('<div id="" data-toggle="modal" data-target="#editArticle" onclick="getEditID(this);" class="editableArticle" ><img src="icon/usericon.jpg" class="icon"/>' +username+ '<span class="br"></span><a href="" style="display:none" id="ajaxUrl" class="">test</a><span id="ajaxTitle" class="">' + data.title + '</span></div>');
-		$("#ajaxUrl").attr("href",data.url);
+		$("#"+change).children(".editableArticle").children("#ajaxUrl").attr("href",data.url);
 		$("#"+change).children("div").attr("id",hiduke);
 		$("#"+change).children(".editableArticle").children("#ajaxTitle").attr("class",hiduke);
 		$("#"+change).children(".editableArticle").children("#ajaxUrl").attr("class",hiduke);
