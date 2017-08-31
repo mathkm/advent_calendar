@@ -114,7 +114,7 @@ public class CalendarDay {
 	}
 
 	public boolean getIsArrive() {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("JST"));
 		Date nowDate = cal.getTime();
 		int diff = articleDate.compareTo(nowDate);
 		if (diff == 0) {
